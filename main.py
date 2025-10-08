@@ -1,14 +1,14 @@
-<<<<<<< HEAD
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# --- allow your site to call the API (adjust origins later) ---
+# --- CORS: Let your cosmic portal speak to the world ---
+# (Wide open for dev magic—lock it down to your domain when you're ready to launch)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # dev mode: open; lock down to your domain when deployed
+    allow_origins=["*"],  # Dev mode = open skies; production = sacred boundaries
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -16,37 +16,43 @@ app.add_middleware(
 
 class BirthData(BaseModel):
     full_name: str
-    birthdate: str  # YYYY-MM-DD
+    birthdate: str  # Format: YYYY-MM-DD (the universe speaks in dates)
 
-# ----------------- numerology helpers -----------------
+# ----------------- Numerology Alchemy -----------------
 def _reduce(n: int) -> int:
+    """Reduce numbers to their sacred essence—except master numbers 11, 22, 33."""
     while n > 9 and n not in (11, 22, 33):
-        n = sum(int(d) for d in str(n))
+        n = sum(int(digit) for digit in str(n))
     return n
 
 def calculate_life_path(birthdate: str) -> int:
-    total = sum(int(d) for d in birthdate.replace("-", ""))
+    """Your soul's blueprint—the path you chose before you arrived."""
+    total = sum(int(digit) for digit in birthdate.replace("-", ""))
     return _reduce(total)
 
 def calculate_expression(name: str) -> int:
+    """How you show up in the world—your cosmic signature."""
     name = name.upper().replace(" ", "")
-    total = sum((ord(c) - 64) for c in name if c.isalpha())
+    total = sum((ord(char) - 64) for char in name if char.isalpha())
     return _reduce(total)
 
 def calculate_soul_urge(name: str) -> int:
+    """What your soul craves when no one's watching—your deepest desires."""
     vowels = "AEIOU"
     name = name.upper()
-    total = sum((ord(c) - 64) for c in name if c in vowels)
+    total = sum((ord(char) - 64) for char in name if char in vowels)
     return _reduce(total)
 
 def calculate_personality(name: str) -> int:
+    """The mask you wear, the energy others feel before you speak."""
     vowels = "AEIOU"
     name = name.upper()
-    total = sum((ord(c) - 64) for c in name if c.isalpha() and c not in vowels)
+    total = sum((ord(char) - 64) for char in name if char.isalpha() and char not in vowels)
     return _reduce(total)
 
-# ----------------- report generator -----------------
+# ----------------- Sacred Report Generator -----------------
 def generate_numerology_text(data: BirthData):
+    """Weave the numbers into soul medicine."""
     name = data.full_name
     birthdate = data.birthdate
     life_path = calculate_life_path(birthdate)
@@ -54,76 +60,79 @@ def generate_numerology_text(data: BirthData):
     soul_urge = calculate_soul_urge(name)
     personality = calculate_personality(name)
 
+    # Life Path Archetypes—each number carries medicine
     life_path_meanings = {
         1: ("The Sacred Pioneer",
-            "You came to lead, to carve paths through unknown landscapes. Your journey is radical independence guided by an inner compass."),
+            "You came here to lead, to carve paths through unknown landscapes. Your journey is radical independence guided by an inner compass that never lies."),
         2: ("The Peacemaker Priestess",
-            "You incarnated to model harmony and emotional intelligence. Gentleness is spiritual mastery, not weakness."),
+            "You incarnated to model harmony and emotional intelligence. Gentleness is spiritual mastery, not weakness. Your presence heals."),
         3: ("The Sacred Storyteller",
-            "You give language to emotion and color to truth. When you silence your voice, your soul aches. Create and share."),
+            "You give language to emotion and color to truth. When you silence your voice, your soul aches. Create fearlessly and share boldly."),
         4: ("The Temple Builder",
-            "You create foundations. Build structures that serve spirit—not cage it."),
+            "You create foundations that last lifetimes. Build structures that serve spirit—not cage it. Stability is your superpower."),
         5: ("The Freedom Dancer",
-            "Change is your teacher. Learn freedom with focus—be both the wind and the wings."),
+            "Change is your teacher, adventure your classroom. Learn freedom with focus—be both the wind and the wings."),
         6: ("The Hearth Keeper",
-            "You carry the archetype of nurturer. Balance devotion to others with devotion to self."),
+            "You carry the archetype of nurturer and sacred guardian. Balance devotion to others with devotion to self. You cannot pour from an empty chalice."),
         7: ("The Mystic Scholar",
-            "You seek truth beneath the surface. Solitude nourishes you—share your wisdom with the world."),
+            "You seek truth beneath the surface, wisdom in the silence. Solitude nourishes you—but don't forget to share your revelations with the world."),
         8: ("The Power Alchemist",
-            "Mastery of material and energetic power. Let integrity be your signature; abundance follows aligned purpose."),
+            "Mastery of material and energetic power is your birthright. Let integrity be your signature; abundance follows aligned purpose."),
         9: ("The Sacred Humanitarian",
-            "Ancient, tender soul. Heal through compassion and creative service; release the past to move freely."),
+            "Ancient, tender soul. You heal through compassion and creative service. Release the past to move freely into your purpose."),
     }
 
     expression_meanings = {
-        1: "You express as a pioneer—direct and self-assured.",
-        2: "You communicate with empathy and grace.",
-        3: "You radiate charisma and creative expression.",
-        4: "You bring ideas into form with reliability and order.",
-        5: "You inspire adventure with versatile, dynamic energy.",
-        6: "You lead with heart; devotion is your language.",
-        7: "You speak with depth; your silence also speaks.",
-        8: "You project strategy, authority, and purpose.",
-        9: "You’re a voice of compassion and emotional wisdom.",
+        1: "You express as a pioneer—direct, bold, and self-assured.",
+        2: "You communicate with empathy, grace, and emotional depth.",
+        3: "You radiate charisma and creative fire—people feel your spark.",
+        4: "You bring ideas into form with reliability, order, and grounded wisdom.",
+        5: "You inspire adventure with versatile, dynamic, magnetic energy.",
+        6: "You lead with heart; devotion and service are your native languages.",
+        7: "You speak with depth and intention; your silence also speaks volumes.",
+        8: "You project strategy, authority, and purposeful power.",
+        9: "You're a voice of compassion, emotional wisdom, and universal love.",
     }
 
     soul_urge_meanings = {
-        1: "Craves autonomy to lead authentically.",
-        2: "Longs for connection and sacred partnership.",
-        3: "Yearns to create and be unfiltered.",
+        1: "Craves autonomy, leadership, and the freedom to lead authentically.",
+        2: "Longs for connection, sacred partnership, and emotional intimacy.",
+        3: "Yearns to create, express, and be unfiltered in your truth.",
         4: "Desires safety, consistency, and integrity-built foundations.",
-        5: "Thirsts for change and experience; freedom as a frequency.",
-        6: "Fulfilled by service—balanced giving/receiving.",
-        7: "Seeks contemplation and spiritual understanding.",
-        8: "Longs for sovereignty—material, emotional, spiritual.",
-        9: "Fulfilled by compassion and service to humanity.",
+        5: "Thirsts for change and experience; freedom as a frequency, not a destination.",
+        6: "Fulfilled by service—when giving and receiving are balanced.",
+        7: "Seeks contemplation, spiritual understanding, and sacred solitude.",
+        8: "Longs for sovereignty—material, emotional, and spiritual mastery.",
+        9: "Fulfilled by compassion, healing, and service to humanity's evolution.",
     }
 
     personality_meanings = {
-        1: "Seen as confident and initiating.",
-        2: "Perceived as gentle and emotionally aware.",
-        3: "Warm, expressive, and inviting.",
-        4: "Grounded, reliable, stabilizing.",
-        5: "Energetic, exciting, a catalyst.",
-        6: "Nurturing, wise, approachable.",
-        7: "Insightful, private, quietly powerful.",
-        8: "Magnetic, purposeful, commanding.",
-        9: "Compassionate, deep, old-soul presence.",
+        1: "Seen as confident, initiating, and a natural leader.",
+        2: "Perceived as gentle, emotionally aware, and deeply intuitive.",
+        3: "Warm, expressive, inviting—you light up the room.",
+        4: "Grounded, reliable, stabilizing—the anchor in the storm.",
+        5: "Energetic, exciting, a catalyst for change and adventure.",
+        6: "Nurturing, wise, approachable—the safe space people crave.",
+        7: "Insightful, private, quietly powerful—mystery incarnate.",
+        8: "Magnetic, purposeful, commanding—you own your presence.",
+        9: "Compassionate, deep, old-soul presence—people feel seen by you.",
     }
 
-    lp_title, lp_body = life_path_meanings.get(life_path, ("Your Path", "Your lessons are unfolding."))
+    lp_title, lp_body = life_path_meanings.get(life_path, ("Your Sacred Path", "Your lessons are unfolding in divine timing."))
 
     report = f"""
 🌙 **Sacred Numerology Report for {name}**
 Date of Birth: {birthdate}
-Prepared by: *Athyna Luna | SacredSpace: Through The Cosmic Lens*
+Prepared with cosmic reverence by: *Athyna Luna | SacredSpace: Through The Cosmic Lens*
 
 ---
 
 ### ✨ Introduction
 Dear {name},
 
-You’ve walked through lifetimes of conditioning—stories that asked you to dim your light. This season, your soul whispers: *no more hiding.* What follows is not prophecy—it’s remembrance.
+You've walked through lifetimes of conditioning—stories that asked you to dim your light, shrink your magic, apologize for your power. This season, your soul whispers: *no more hiding.* 
+
+What follows is not prophecy—it's **remembrance**. These numbers aren't random; they're the frequency your soul chose before you arrived. Trust what resonates. Release what doesn't. You know your truth better than anyone.
 
 ---
 
@@ -133,105 +142,54 @@ You’ve walked through lifetimes of conditioning—stories that asked you to di
 ---
 
 ### 🔠 Expression Number {expression}
-{expression_meanings.get(expression, "")}
+{expression_meanings.get(expression, "Your expression is unfolding in divine timing.")}
 
 ---
 
 ### 💓 Soul Urge Number {soul_urge}
-{soul_urge_meanings.get(soul_urge, "")}
+{soul_urge_meanings.get(soul_urge, "Your soul's deepest longing is awakening.")}
 
 ---
 
 ### 🌀 Personality Number {personality}
-{personality_meanings.get(personality, "")}
+{personality_meanings.get(personality, "Your outer presence is evolving.")}
 
 ---
 
 ### 🌑 Shadow Work Invitations
-1) Where am I mistaking control for safety?
-2) Which emotions am I ready to express instead of suppress?
-3) What belief about my voice/power is ready to be released?
+These aren't questions to answer once—they're portals to return to again and again:
+
+1. Where am I mistaking control for safety?
+2. Which emotions am I ready to **express** instead of suppress?
+3. What belief about my voice, my power, or my worthiness is ready to be released?
 
 ---
 
-### 🌕 Ritual Practice (Waxing Moon)
-Write your name on a slip of paper. Speak aloud: *“I reclaim my power, my voice, my divine authority.”* Burn safely and let the smoke rise like your new beginning.
+### 🌕 Ritual Practice (Waxing Moon Energy)
+Write your full name on a slip of paper. Hold it to your heart. Speak aloud:  
+*"I reclaim my power, my voice, my divine authority. I am both human and holy."*
+
+Burn the paper safely (cauldron, fireproof dish, or candle flame). Let the smoke rise like your new beginning. Watch it transform. So are you.
 
 ---
 
 ### 🌟 Closing Affirmation
-*“I trust my cosmic blueprint. I lead with courage, create with love, and remember that I am both human and divine.”*
+*"I trust my cosmic blueprint. I lead with courage, create with love, and remember that I am both human and divine. My presence is my power. My voice is my magic."*
 
-Trust your cosmic blueprint. You were made for this. 🌙  
+Trust your cosmic blueprint, {name}. You were made for this. The universe doesn't make mistakes—and neither did you when you chose this path.
+
+🌙 **You are the magic you've been searching for.**  
 — *Athyna Luna | SacredSpace: Through The Cosmic Lens*
 """
     return report.strip()
 
-# ----------------- routes -----------------
-@app.get("/")  # quick health check
+# ----------------- API Routes -----------------
+@app.get("/")
 def root():
-    return {"ok": True, "msg": "Soul API is alive"}
+    """Quick pulse check—is the cosmic API alive and humming?"""
+    return {"ok": True, "msg": "Soul API is alive and ready to channel cosmic wisdom 🌙✨"}
 
 @app.post("/numerology/")
 def numerology_report(data: BirthData):
+    """Generate a sacred numerology report—soul medicine in digital form."""
     return {"report": generate_numerology_text(data)}
-=======
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from geopy.geocoders import Nominatim
-from timezonefinder import TimezoneFinder
-from datetime import datetime
-import pytz
-from flatlib.chart import Chart
-from flatlib.datetime import Datetime
-from flatlib.geopos import GeoPos
-
-app = FastAPI()
-
-class BirthData(BaseModel):
-    name: str
-    birth_date: str  # Format: YYYY-MM-DD
-    birth_time: str  # Format: HH:MM
-    birth_place: str  # City, State, Country
-
-@app.post("/generate-report")
-def generate_report(data: BirthData):
-    try:
-        geolocator = Nominatim(user_agent="astro_api")
-        location = geolocator.geocode(data.birth_place)
-        if not location:
-            raise HTTPException(status_code=400, detail="Invalid birth place")
-
-        lat = location.latitude
-        lon = location.longitude
-
-        tf = TimezoneFinder()
-        timezone_str = tf.timezone_at(lng=lon, lat=lat)
-        if not timezone_str:
-            raise HTTPException(status_code=400, detail="Time zone not found")
-
-        timezone = pytz.timezone(timezone_str)
-        naive_dt = datetime.strptime(f"{data.birth_date} {data.birth_time}", "%Y-%m-%d %H:%M")
-        localized_dt = timezone.localize(naive_dt)
-        utc_dt = localized_dt.astimezone(pytz.utc)
-        utc_str = utc_dt.strftime("%Y/%m/%d %H:%M:%S")
-
-        date = Datetime(utc_str, 'UTC')
-        pos = GeoPos(str(lat), str(lon))
-        chart = Chart(date, pos)
-
-        report = {
-            "name": data.name,
-            "sun": str(chart.get("SUN")),
-            "moon": str(chart.get("MOON")),
-            "ascendant": str(chart.get("ASC")),
-            "mercury": str(chart.get("MER")),
-            "venus": str(chart.get("VEN")),
-            "mars": str(chart.get("MAR"))
-        }
-
-        return report
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
->>>>>>> 6ec01195b37173f8aa1cf66b8cf955f9d69d7fb6
