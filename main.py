@@ -184,10 +184,27 @@ Trust your cosmic blueprint, {name}. You were made for this. The universe doesn'
     return report.strip()
 
 # ----------------- API Routes -----------------
-@app.get("/")
-def root():
-    """Quick pulse check—is the cosmic API alive and humming?"""
-    return {"ok": True, "msg": "Soul API is alive and ready to channel cosmic wisdom 🌙✨"}
+from fastapi.responses import HTMLResponse
+
+@app.post("/numerology/", response_class=HTMLResponse)
+def numerology_report(data: BirthData):
+    report = generate_numerology_text(data)
+    styled_html = f"""
+    <div style='background:#f9f7ff;padding:40px;border-radius:18px;
+                font-family:Georgia,serif;color:#2d2056;line-height:1.8;'>
+        <h2 style='text-align:center;color:#7b4fff;'>🌙 Your Sacred Numerology Report 🌙</h2>
+        <div style='white-space:pre-wrap;background:white;padding:24px;
+                    border-radius:12px;margin-top:16px;
+                    font-family:"Courier New",monospace;
+                    box-shadow:0 2px 6px rgba(0,0,0,0.1);'>
+            {report}
+        </div>
+        <p style='margin-top:24px;'>With love,<br><strong>Athyna Luna</strong><br>
+        <em>SacredSpace: Through The Cosmic Lens ✨</em></p>
+    </div>
+    """
+    return styled_html
+
 
 @app.post("/numerology/")
 def numerology_report(data: BirthData):
