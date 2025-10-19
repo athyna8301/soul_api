@@ -1,0 +1,50 @@
+import os
+from datetime import datetime
+from fpdf import FPDF
+from geopy.geocoders import Nominatim
+from tzfpy import Tzf
+from zoneinfo import ZoneInfo
+
+def generate_birth_report(name, birthdate, birthtime, birthplace):
+    # Step 1: Geocode
+    geolocator = Nominatim(user_agent="birth_report_locator")
+    location = geolocator.geocode(birthplace)
+    if not location:
+        raise Exception(f"Could not find location for: {birthplace}")
+
+    latitude = location.latitude
+    longitude = location.longitude
+
+    # Step 2: Timezone
+    tz_lookup = Tzf()
+    timezone_str = tz_lookup.timezone_at(latitude, longitude)
+
+    # Step 3: Local datetime
+    birth_dt = datetime.strptime(f"{birthdate} {birthtime}", "%Y-%m-%d %H:%M")
+    birth_dt_local = birth_dt.replace(tzinfo=ZoneInfo(timezone_str))
+
+    # Step 4: Report text
+    report_text = f"""
+--- BIRTH REPORT ---
+Name: {name}
+Location: {birthplace} ({latitude:.4f}, {longitude:.4f})
+Timezone: {timezone_str}
+Birth Date & Time (local): {birth_dt_local.strftime('%B %d, %Y at %I:%M %p %Z')}
+
+Horoscope Summary:
+Today is a day of new beginnings. Trust your instincts and be open to opportunities.
+"""
+
+    # Step 5: Save to PDF
+    os.makedirs("reports", exist_ok=True)
+    filename = f"{name.replace(' ', '_')}_birth_report.pdf"
+    filepath = os.path.join("reports", filename)
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    for line in report_text.strip().split("\n"):
+        pdf.cell(200, 10, txt=line, ln=True)
+    pdf.output(filepath)
+
+    return filepath
