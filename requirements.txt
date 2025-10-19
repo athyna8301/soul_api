@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-python-multipart
-pydantic
-email-validator
-python-dotenv==1.1.1
