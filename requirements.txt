@@ -1,9 +1,5 @@
-fastapi==0.119.0
-uvicorn==0.37.0
-pydantic==2.12.0
-python-dotenv==1.1.1
-httpx==0.28.1
-fastapi>=0.110
-uvicorn[standard]>=0.22
-pydantic>=2
-python-dotenv
+fastapi
+uvicorn
+python-multipart
+pydantic
+email-validator
