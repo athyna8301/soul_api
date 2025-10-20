@@ -48,7 +48,9 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         logger.info(f"Received webhook at {datetime.now()}")
         
         answers = body.get("data", {}).get("answers", [])
-        
+        answers = body.get("data", {}).get("answers", [])
+        logger.info(f"🔍 Raw webhook body: {body}")
+        logger.info(f"🔍 Answers array: {answers}")
         # Field reference mapping (update with your actual Tally field refs)
         ref_map = {
             "full_name": "full_name_abc123",
