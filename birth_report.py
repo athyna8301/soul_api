@@ -1,4 +1,4 @@
-from tzfpy import Tzf
+from tzfpy import get_tz
 from geopy.geocoders import Nominatim
 from datetime import datetime
 from zoneinfo import ZoneInfo
