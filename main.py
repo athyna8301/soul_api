@@ -87,7 +87,37 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         if not validate_birthdate(birthdate):
             logger.error(f"Invalid birthdate: {birthdate}")
             return {"ok": False, "msg": "Invalid birthdate format or value"}
+                focus = by_ref("spiritual_focus").strip() if by_ref("spiritual_focus") else "personal growth"
+        report_type = by_ref("report_type").strip() if by_ref("report_type") else "Deep Dive Birth Chart"
+
+        # ADD THESE DEBUG LINES:
+        logger.info(f"✅ Extracted fields: name={name}, email={email}, birthdate={birthdate}")
         
+        # Validation
+        if not all([name, birthdate, email]):
+            logger.error(f"Missing required fields: name={name}, birthdate={birthdate}, email={email}")
+            return {
+                "ok": False, 
+                "msg": "Missing required fields", 
+                "got": {"name": name, "birthdate": birthdate, "email": email}
+            }
+        
+        logger.info("✅ Validation passed")
+        
+        if not validate_birthdate(birthdate):
+            logger.error(f"Invalid birthdate: {birthdate}")
+            return {"ok": False, "msg": "Invalid birthdate format or value"}
+        
+        # Email validation
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            logger.error(f"Invalid email: {email}")
+            return {"ok": False, "msg": "Invalid email format"}
+        
+        logger.info("✅ About to send confirmation email")
+        
+        # Step 1: Send instant confirmation email
+        send_confirmation_email(email, name, report_type, focus)
+
         # Email validation
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             logger.error(f"Invalid email: {email}")
