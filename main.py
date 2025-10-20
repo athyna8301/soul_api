@@ -3,8 +3,7 @@ from pydantic import BaseModel, EmailStr, validator
 from typing import Optional
 from birth_report import generate_birth_report
 import os
-import smtplib
-from email.message import EmailMessage
+import resend
 from dotenv import load_dotenv
 import logging
 from datetime import datetime
@@ -19,13 +18,13 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # Environment variables
-SMTP_HOST = os.getenv("SMTP_HOST")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 465))
-SMTP_USER = os.getenv("SMTP_USER")
-SMTP_PASS = os.getenv("SMTP_PASS")
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+SENDER_EMAIL = os.getenv("SENDER_EMAIL", "onboarding@resend.dev")
 SENDER_NAME = os.getenv("SENDER_NAME", "Athyna Luna | SacredSpace")
 MANUAL_REVIEW = os.getenv("MANUAL_REVIEW", "false").lower() == "true"
+
+# Initialize Resend
+resend.api_key = RESEND_API_KEY
 
 class WebhookData(BaseModel):
     data: dict
@@ -101,11 +100,11 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         
         # Step 1: Send instant confirmation email
         send_confirmation_email(email, name, report_type, focus)
-        logger.info(f"Confirmation email sent to {email}")
+        logger.info(f"✅ Confirmation email sent to {email}")
         
         # Step 2: Schedule welcome email (12 hours - use background task or scheduler)
         send_welcome_email(email, name, focus)
-        logger.info(f"Welcome email sent to {email}")
+        logger.info(f"✅ Welcome email sent to {email}")
         
         # Step 3: Generate report
         if MANUAL_REVIEW:
@@ -128,9 +127,6 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         # Step 4: Send delivery email with report
         send_delivery_email(email, name, focus, report_type, pdf_path)
         logger.info(f"Delivery email sent to {email}")
-        
-        # Step 5: Schedule follow-up email (5-7 days)
-        # background_tasks.add_task(schedule_followup, email, name, report_type)
         
         return {
             "ok": True, 
@@ -291,32 +287,30 @@ SacredSpace: Through The Cosmic Lens"""
 
 
 def send_email(recipient, subject, body, attachment_path=None):
-    """Core email sending function with error handling"""
+    """Core email sending function using Resend API"""
     try:
-        msg = EmailMessage()
-        msg["Subject"] = subject
-        msg["From"] = f"{SENDER_NAME} <{SENDER_EMAIL}>"
-        msg["To"] = recipient
-        msg.set_content(body)
+        params = {
+            "from": f"{SENDER_NAME} <{SENDER_EMAIL}>",
+            "to": [recipient],
+            "subject": subject,
+            "text": body
+        }
         
+        # Add attachment if provided
         if attachment_path and os.path.exists(attachment_path):
             with open(attachment_path, "rb") as f:
-                msg.add_attachment(
-                    f.read(), 
-                    maintype="application", 
-                    subtype="pdf", 
-                    filename=os.path.basename(attachment_path)
-                )
+                import base64
+                content = base64.b64encode(f.read()).decode()
+                params["attachments"] = [{
+                    "filename": os.path.basename(attachment_path),
+                    "content": content
+                }]
         
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as smtp:
-            smtp.starttls()
-            smtp.login(SMTP_USER, SMTP_PASS)
-            smtp.send_message(msg)
-            
-        logger.info(f"Email sent successfully to {recipient}: {subject}")
+        email = resend.Emails.send(params)
+        logger.info(f"✅ Email sent successfully to {recipient}: {subject} (ID: {email['id']})")
         
     except Exception as e:
-        logger.error(f"Email sending failed to {recipient}: {str(e)}")
+        logger.error(f"❌ Email sending failed to {recipient}: {str(e)}")
         raise
 
 
