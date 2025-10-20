@@ -58,13 +58,12 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
     "question_pDjl08": "spiritual_focus"
 }                 
         def by_ref(ref_key):
-    ref = ref_map.get(ref_key)
-    for a in answers:
-        if a.get("key") == ref:
-            return a.get("value", "")
-    return ""
-    
-        
+            ref = ref_map.get(ref_key)
+            for a in answers:
+                if a.get("key") == ref:
+                    return a.get("value", "")
+            return ""
+
         # Extract and validate data
         name = by_ref("full_name").strip()
         birthdate = by_ref("birthdate").strip()
