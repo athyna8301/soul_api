@@ -23,7 +23,7 @@ def generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_
         
         # Timezone lookup
         tf = TimezoneFinder()
-tz = tf.timezone_at(lat=lat, lng=lon)
+        tz = tf.timezone_at(lat=lat, lng=lon)
         
         # Parse datetime
         dt = datetime.strptime(f"{birthdate} {birthtime}", "%Y-%m-%d %H:%M")
