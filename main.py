@@ -306,9 +306,10 @@ def send_email(recipient, subject, body, attachment_path=None):
                     filename=os.path.basename(attachment_path)
                 )
         
-        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as smtp:
-            smtp.login(SMTP_USER, SMTP_PASS)
-            smtp.send_message(msg)
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as smtp:
+    smtp.starttls()
+    smtp.login(SMTP_USER, SMTP_PASS)
+    smtp.send_message(msg)
             
         logger.info(f"Email sent successfully to {recipient}: {subject}")
         
