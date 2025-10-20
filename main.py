@@ -50,13 +50,14 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         answers = body.get("data", {}).get("fields", [])
         logger.info(f"🔍 Raw webhook body: {body}")
         logger.info(f"🔍 Answers array: {answers}")
-        # Field reference mapping (update with your actual Tally field refs)
+        
+        # Field reference mapping
         ref_map = {
-    "full_name": "question_BxOPLR",
-    "birthdate": "question_eRqGBl",
-    "email": "question_kNDV0o",
-    "spiritual_focus": "question_pDjl08"
-}
+            "full_name": "question_BxOPLR",
+            "birthdate": "question_eRqGBl",
+            "email": "question_kNDV0o",
+            "spiritual_focus": "question_pDjl08"
+        }
 
         def by_ref(ref_key):
             ref = ref_map.get(ref_key)
@@ -74,23 +75,6 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         focus = by_ref("spiritual_focus").strip() if by_ref("spiritual_focus") else "personal growth"
         report_type = by_ref("report_type").strip() if by_ref("report_type") else "Deep Dive Birth Chart"
 
-        
-        # Validation
-        if not all([name, birthdate, email]):
-            logger.error(f"Missing required fields: name={name}, birthdate={birthdate}, email={email}")
-            return {
-                "ok": False, 
-                "msg": "Missing required fields", 
-                "got": {"name": name, "birthdate": birthdate, "email": email}
-            }
-        
-        if not validate_birthdate(birthdate):
-            logger.error(f"Invalid birthdate: {birthdate}")
-            return {"ok": False, "msg": "Invalid birthdate format or value"}
-                focus = by_ref("spiritual_focus").strip() if by_ref("spiritual_focus") else "personal growth"
-        report_type = by_ref("report_type").strip() if by_ref("report_type") else "Deep Dive Birth Chart"
-
-        # ADD THESE DEBUG LINES:
         logger.info(f"✅ Extracted fields: name={name}, email={email}, birthdate={birthdate}")
         
         # Validation
@@ -117,26 +101,15 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         
         # Step 1: Send instant confirmation email
         send_confirmation_email(email, name, report_type, focus)
-
-        # Email validation
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            logger.error(f"Invalid email: {email}")
-            return {"ok": False, "msg": "Invalid email format"}
-        
-        # Step 1: Send instant confirmation email
-        send_confirmation_email(email, name, report_type, focus)
         logger.info(f"Confirmation email sent to {email}")
         
         # Step 2: Schedule welcome email (12 hours - use background task or scheduler)
-        # For immediate implementation, send welcome email now
-        # In production, use Celery, APScheduler, or Zapier for delayed sending
         send_welcome_email(email, name, focus)
         logger.info(f"Welcome email sent to {email}")
         
         # Step 3: Generate report
         if MANUAL_REVIEW:
             logger.info(f"Manual review enabled - report queued for {name}")
-            # Store order details for manual processing
             return {
                 "ok": True, 
                 "msg": "Order received - manual review required",
@@ -157,7 +130,6 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         logger.info(f"Delivery email sent to {email}")
         
         # Step 5: Schedule follow-up email (5-7 days)
-        # Use background task or external scheduler
         # background_tasks.add_task(schedule_followup, email, name, report_type)
         
         return {
@@ -342,11 +314,6 @@ def send_email(recipient, subject, body, attachment_path=None):
             smtp.send_message(msg)
             
         logger.info(f"Email sent successfully to {recipient}: {subject}")
-        
-    except Exception as e:
-        logger.error(f"Email sending failed to {recipient}: {str(e)}")
-        raise
-
         
     except Exception as e:
         logger.error(f"Email sending failed to {recipient}: {str(e)}")
