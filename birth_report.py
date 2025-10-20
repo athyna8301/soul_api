@@ -1,4 +1,4 @@
-from tzfpy import get_tz
+from timezonefinder import TimezoneFinder
 from geopy.geocoders import Nominatim
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -22,8 +22,12 @@ def generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_
         lat, lon = loc.latitude, loc.longitude
         
         # Timezone lookup
-        tz_lookup = Tzf()
-        tz = tz_lookup.timezone_at(lat, lon)
+        tf = TimezoneFinder()
+tz = tf.timezone_at(lat=lat, lng=lon)
+        
+        # Parse datetime
+        dt = datetime.strptime(f"{birthdate} {birthtime}", "%Y-%m-%d %H:%M")
+        local_dt = dt.replace(tzinfo=ZoneInfo(tz))
         
         # Parse datetime
         dt = datetime.strptime(f"{birthdate} {birthtime}", "%Y-%m-%d %H:%M")
