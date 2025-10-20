@@ -52,10 +52,10 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         logger.info(f"🔍 Answers array: {answers}")
         # Field reference mapping (update with your actual Tally field refs)
         ref_map = {
-    "question_BxOPLR": "full_name",
-    "question_eRqGBl": "birthdate",
-    "question_kNDV0o": "email",
-    "question_pDjl08": "spiritual_focus"
+    "full_name": "question_BxOPLR",
+    "birthdate": "question_eRqGBl",
+    "email": "question_kNDV0o",
+    "spiritual_focus": "question_pDjl08"
 }
 
         def by_ref(ref_key):
