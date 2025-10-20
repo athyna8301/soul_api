@@ -47,33 +47,33 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         body = await request.json()
         logger.info(f"Received webhook at {datetime.now()}")
         
-        answers = body.get("data", {}).get("answers", [])
-        answers = body.get("data", {}).get("answers", [])
+        answers = body.get("data", {}).get("fields", [])
         logger.info(f"🔍 Raw webhook body: {body}")
         logger.info(f"🔍 Answers array: {answers}")
         # Field reference mapping (update with your actual Tally field refs)
         ref_map = {
-    "question_BxOPlR": "full_name",
-    "question_eHqGBl": "birthdate",
-    "question_kNDVOo": "email",
-    "question_pDjlO8": "spiritual_focus"
+    "full_name": "question_BxOPLR",
+    "birthdate": "question_eRqGBl",
+    "email": "question_kNDV0o",
+    "spiritual_focus": "question_pDjl08"
 }
-        
+
         def by_ref(ref_key):
             ref = ref_map.get(ref_key)
             for a in answers:
-                if a.get("field", {}).get("ref") == ref:
-                    return a.get("text") or a.get("email") or a.get("date") or a.get("choice")
+                if a.get("key") == ref:
+                    return a.get("value", "")
             return ""
-        
+
         # Extract and validate data
         name = by_ref("full_name").strip()
         birthdate = by_ref("birthdate").strip()
-        birthtime = by_ref("birthtime").strip() or "12:00"
-        birthplace = by_ref("birthplace").strip() or "San Francisco, CA"
+        birthtime = by_ref("birthtime").strip() if by_ref("birthtime") else "12:00"
+        birthplace = by_ref("birthplace").strip() if by_ref("birthplace") else "San Francisco, CA"
         email = by_ref("email").strip().lower()
-        focus = by_ref("spiritual_focus").strip() or "personal growth"
-        report_type = by_ref("report_type").strip() or "Deep Dive Birth Chart"
+        focus = by_ref("spiritual_focus").strip() if by_ref("spiritual_focus") else "personal growth"
+        report_type = by_ref("report_type").strip() if by_ref("report_type") else "Deep Dive Birth Chart"
+
         
         # Validation
         if not all([name, birthdate, email]):
