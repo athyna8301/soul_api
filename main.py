@@ -41,7 +41,7 @@ def validate_birthdate(date_str: str) -> bool:
     except ValueError:
         return False
 
-@app.post("/tally-webhook")
+@app.post("/webhook")
 async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
     try:
         body = await request.json()
