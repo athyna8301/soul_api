@@ -307,9 +307,9 @@ def send_email(recipient, subject, body, attachment_path=None):
                 )
         
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as smtp:
-    smtp.starttls()
-    smtp.login(SMTP_USER, SMTP_PASS)
-    smtp.send_message(msg)
+        smtp.starttls()
+        smtp.login(SMTP_USER, SMTP_PASS)
+        smtp.send_message(msg)
             
         logger.info(f"Email sent successfully to {recipient}: {subject}")
         
