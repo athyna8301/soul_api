@@ -88,7 +88,6 @@ report_type_map = {
     "fda599e2-8f77-48a7-add5-396af4f0e5d9": "ShadowWork Workbook"
 }
 
-<<<<<<< HEAD
 def by_ref(ref_key):
     """Extract field value by reference key"""
     ref = ref_map.get(ref_key)
@@ -114,17 +113,6 @@ focus = by_ref("spiritual_focus").strip() or "spiritual growth"
 report_type = report_type_map.get(report_type_id, "Deep Dive Birth Chart")
 
 logger.info(f"✅ Extracted fields: name={name}, email={email}, birthdate={birthdate}, birthtime={birthtime}, birthplace={birthplace}, report_type={report_type}")
-=======
-        # Extract and validate data
-        name = by_ref("full_name").strip()
-        birthdate = by_ref("birthdate").strip()
-        birthtime = by_ref("birthtime").strip() if by_ref("birthtime") else "12:00"
-        birthplace = by_ref("birthplace").strip() if by_ref("birthplace") else "San Francisco, CA"
-        email = by_ref("email").strip().lower()
-        focus = by_ref("spiritual_focus").strip() if by_ref("spiritual_focus") else "personal growth"
-        report_type = by_ref("report_type").strip() if by_ref("report_type") else "Deep Dive Birth Chart"
-
->>>>>>> a50da399497fd6008e8e423da86b2cc6be89595d
         
         # Validation
         if not all([name, birthdate, email]):
