@@ -55,8 +55,7 @@ def send_email(recipient, subject, body, attachment_path=None):
             "from": f"{SENDER_NAME} <{SENDER_EMAIL}>",
             "to": [recipient],
             "subject": subject,
-            "html": body.replace("\n", "
-")
+            "html": body.replace("\n", "<br>")
         }
         
         # Add attachment if provided
@@ -81,6 +80,11 @@ def send_email(recipient, subject, body, attachment_path=None):
         response.raise_for_status()
         
         logger.info(f"✅ Email sent successfully to {recipient}: {subject} (ID: {response.json().get('id', 'N/A')})")
+        
+    except Exception as e:
+        logger.error(f"Email sending failed to {recipient}: {str(e)}")
+        raise
+
         
     except Exception as e:
         logger.error(f"Email sending failed to {recipient}: {str(e)}")
