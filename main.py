@@ -290,8 +290,9 @@ SacredSpace: Through The Cosmic Lens"""
 
 
 def send_email(recipient, subject, body, attachment_path=None):
-    """Email sending using Resend API"""
+    """Email sending using Resend API with optional PDF attachment"""
     import requests
+    import base64
     
     try:
         url = "https://api.resend.com/emails"
@@ -307,12 +308,28 @@ def send_email(recipient, subject, body, attachment_path=None):
             "html": body.replace("\n", "<br>")
         }
         
-        # TODO: Add attachment support if needed
+        # Add attachment if provided
+        if attachment_path:
+            try:
+                with open(attachment_path, "rb") as f:
+                    file_content = base64.b64encode(f.read()).decode("utf-8")
+                
+                filename = attachment_path.split("/")[-1]
+                data["attachments"] = [
+                    {
+                        "filename": filename,
+                        "content": file_content,
+                        "content_type": "application/pdf"
+                    }
+                ]
+                logger.info(f"Attachment added: {filename}")
+            except Exception as e:
+                logger.warning(f"Could not attach PDF: {str(e)}")
         
         response = requests.post(url, json=data, headers=headers)
         response.raise_for_status()
         
-        logger.info(f"Email sent successfully to {recipient}: {subject}")
+        logger.info(f"✅ Email sent successfully to {recipient}: {subject} (ID: {response.json().get('id', 'N/A')})")
         
     except Exception as e:
         logger.error(f"Email sending failed to {recipient}: {str(e)}")
