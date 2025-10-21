@@ -30,18 +30,21 @@ def generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_
         local_dt = dt.replace(tzinfo=ZoneInfo(tz))
         
         # Generate report content
+                # Generate report content
         content = generate_report_content(name, local_dt, birthplace, lat, lon, tz, focus, report_type)
         
-        # Create reports directory if it doesn't exist
+        # Create reports directory with absolute path
+        reports_dir = os.path.join(os.getcwd(), "reports")
         try:
-            os.makedirs("reports", exist_ok=True)
-        except FileExistsError:
-            pass  # Folder already exists, that's fine
+            if os.path.exists(reports_dir) and not os.path.isdir(reports_dir):
+                os.remove(reports_dir)  # Remove if it's a file
+            os.makedirs(reports_dir, exist_ok=True)
         except Exception as e:
             logger.warning(f"Could not create reports folder: {e}")
         
         filename = f"{name.replace(' ', '_')}_{report_type.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
-        path = os.path.join("reports", filename)
+        path = os.path.join(reports_dir, filename)
+
         
         create_pdf(path, content, name, report_type)
         
