@@ -29,15 +29,17 @@ def generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_
         dt = datetime.strptime(f"{birthdate} {birthtime}", "%Y-%m-%d %H:%M")
         local_dt = dt.replace(tzinfo=ZoneInfo(tz))
         
-        # Parse datetime
-        dt = datetime.strptime(f"{birthdate} {birthtime}", "%Y-%m-%d %H:%M")
-        local_dt = dt.replace(tzinfo=ZoneInfo(tz))
-        
-        # Generate report content (placeholder - integrate with actual astrology API)
+        # Generate report content
         content = generate_report_content(name, local_dt, birthplace, lat, lon, tz, focus, report_type)
         
-        # Create PDF
-        os.makedirs("reports", exist_ok=True)
+        # Create reports directory if it doesn't exist
+        try:
+            os.makedirs("reports", exist_ok=True)
+        except FileExistsError:
+            pass  # Folder already exists, that's fine
+        except Exception as e:
+            logger.warning(f"Could not create reports folder: {e}")
+        
         filename = f"{name.replace(' ', '_')}_{report_type.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
         path = os.path.join("reports", filename)
         
