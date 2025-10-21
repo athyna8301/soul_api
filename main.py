@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 import logging
 from datetime import datetime
 import re
+import asyncio
+import random
 
 load_dotenv()
 
@@ -39,6 +41,43 @@ def validate_birthdate(date_str: str) -> bool:
         return True
     except ValueError:
         return False
+
+async def delayed_email_sequence(email, name, report_type, focus, birthdate, birthtime, birthplace):
+    """Send emails with realistic delays"""
+    try:
+        # Step 1: Confirmation email (5-10 minutes delay)
+        delay_minutes = random.randint(5, 10)
+        logger.info(f"⏰ Scheduling confirmation email in {delay_minutes} minutes")
+        await asyncio.sleep(delay_minutes * 60)
+        send_confirmation_email(email, name, report_type, focus)
+        logger.info(f"✅ Confirmation email sent to {email}")
+        
+        # Step 2: Welcome email (6 hours after confirmation)
+        logger.info(f"⏰ Scheduling welcome email in 6 hours")
+        await asyncio.sleep(6 * 60 * 60)
+        send_welcome_email(email, name, focus)
+        logger.info(f"✅ Welcome email sent to {email}")
+        
+        # Step 3: Generate report (happens after welcome email)
+        if MANUAL_REVIEW:
+            logger.info(f"Manual review enabled - report queued for {name}")
+            return
+        
+        # Generate report
+        try:
+            pdf_path = generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_type)
+            logger.info(f"Report generated: {pdf_path}")
+            
+            # Step 4: Send delivery email with report
+            send_delivery_email(email, name, focus, report_type, pdf_path)
+            logger.info(f"✅ Delivery email sent to {email}")
+            
+        except Exception as e:
+            logger.error(f"Report generation failed: {str(e)}")
+            send_error_notification(email, name)
+            
+    except Exception as e:
+        logger.error(f"Email sequence error: {str(e)}")
 
 @app.post("/webhook")
 async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
@@ -96,40 +135,17 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
             logger.error(f"Invalid email: {email}")
             return {"ok": False, "msg": "Invalid email format"}
         
-        logger.info("✅ About to send confirmation email")
+        logger.info("✅ Starting delayed email sequence")
         
-        # Step 1: Send instant confirmation email
-        send_confirmation_email(email, name, report_type, focus)
-        logger.info(f"✅ Confirmation email sent to {email}")
-        
-        # Step 2: Schedule welcome email (12 hours - use background task or scheduler)
-        send_welcome_email(email, name, focus)
-        logger.info(f"✅ Welcome email sent to {email}")
-        
-        # Step 3: Generate report
-        if MANUAL_REVIEW:
-            logger.info(f"Manual review enabled - report queued for {name}")
-            return {
-                "ok": True, 
-                "msg": "Order received - manual review required",
-                "client": name
-            }
-        
-        # Generate report
-        try:
-            pdf_path = generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_type)
-            logger.info(f"Report generated: {pdf_path}")
-        except Exception as e:
-            logger.error(f"Report generation failed: {str(e)}")
-            send_error_notification(email, name)
-            return {"ok": False, "msg": f"Report generation failed: {str(e)}"}
-        
-        # Step 4: Send delivery email with report
-        send_delivery_email(email, name, focus, report_type, pdf_path)
-        logger.info(f"Delivery email sent to {email}")
+        # Schedule the delayed email sequence in the background
+        background_tasks.add_task(
+            delayed_email_sequence, 
+            email, name, report_type, focus, birthdate, birthtime, birthplace
+        )
         
         return {
             "ok": True, 
+            "msg": "Order received - emails scheduled",
             "sent_to": email,
             "report_type": report_type,
             "timestamp": datetime.now().isoformat()
@@ -137,6 +153,11 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         
     except Exception as e:
         logger.error(f"Webhook processing error: {str(e)}")
+        # Send immediate error notification
+        try:
+            send_error_notification(email, name)
+        except:
+            pass
         return {"ok": False, "msg": f"Server error: {str(e)}"}
 
 
@@ -265,7 +286,7 @@ SacredSpace: Through The Cosmic Lens"""
 
 
 def send_error_notification(recipient, name):
-    """Error notification - compassionate and solution-oriented"""
+    """Error notification - compassionate and solution-oriented - SENT IMMEDIATELY"""
     subject = "⚠️ A Cosmic Hiccup (We're On It!)"
     
     body = f"""Dear {name},
