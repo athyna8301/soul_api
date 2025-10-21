@@ -180,7 +180,6 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
             pass
         return {"ok": False, "msg": f"Server error: {str(e)}"}
 
-
 def send_confirmation_email(recipient, name, report_type, focus):
     """Confirmation email - Penn's enhanced copy"""
     subject = f"✨ Your {report_type} Is Being Woven by the Stars"
@@ -217,7 +216,6 @@ Athyna Luna 🌙
 P.S. Add {SENDER_EMAIL} to your contacts so my emails land in your inbox, not the void. The universe works in mysterious ways, but your spam filter doesn't have to. 😉"""
 
     send_email(recipient, subject, body)
-
 
 def send_welcome_email(recipient, name, focus, report_type):
     """Welcome email - Penn's enhanced copy"""
@@ -349,4 +347,59 @@ P.S. If this reading resonated deeply, I'd be honored if you'd share your experi
     send_email(recipient, subject, body, pdf_path)
 
 
-def send_followup_email(
+def send_error_notification(recipient, name):
+    """Error notification - compassionate and solution-oriented - SENT IMMEDIATELY"""
+    subject = "⚠️ A Cosmic Hiccup (We're On It!)"
+    
+    body = f"""Dear {name},
+
+I'm reaching out because there was a technical issue generating your report. Mercury retrograde strikes again! 😅
+
+**Here's what's happening:**
+I'm personally reviewing your order and will have your report to you within 24 hours. Sometimes the cosmos asks us to slow down and do things with extra care.
+
+You'll receive an email from me as soon as your reading is ready.
+
+Thank you for your patience and trust.
+
+With cosmic apologies,
+Athyna Luna 🌙
+SacredSpace: Through The Cosmic Lens"""
+
+    send_email(recipient, subject, body)
+
+
+def send_email(recipient, subject, body, attachment_path=None):
+    """Core email sending function using Resend API"""
+    try:
+        params = {
+            "from": f"{SENDER_NAME} <{SENDER_EMAIL}>",
+            "to": [recipient],
+            "subject": subject,
+            "text": body
+        }
+        
+        # Add attachment if provided
+        if attachment_path and os.path.exists(attachment_path):
+            with open(attachment_path, "rb") as f:
+                import base64
+                content = base64.b64encode(f.read()).decode()
+                params["attachments"] = [{
+                    "filename": os.path.basename(attachment_path),
+                    "content": content
+                }]
+        
+        email = resend.Emails.send(params)
+        logger.info(f"✅ Email sent successfully to {recipient}: {subject} (ID: {email['id']})")
+        
+    except Exception as e:
+        logger.error(f"❌ Email sending failed to {recipient}: {str(e)}")
+        raise
+
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
+   
