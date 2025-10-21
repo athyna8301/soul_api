@@ -180,10 +180,13 @@ def create_pdf(path, content, name, report_type):
     pdf.cell(0, 10, txt=f"Prepared for {name}", ln=True, align="C")
     pdf.ln(10)
     
-    # Body content
+    # Body content - remove special characters that FPDF can't handle
     pdf.set_font("Arial", size=11)
     for line in content.strip().split("\n"):
-        pdf.multi_cell(0, 6, txt=line.strip())
+        # Remove emojis and special unicode characters
+        clean_line = line.encode('ascii', 'ignore').decode('ascii')
+        if clean_line.strip():  # Only add non-empty lines
+            pdf.multi_cell(0, 6, txt=clean_line.strip())
     
     pdf.output(path)
 
