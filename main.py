@@ -106,30 +106,58 @@ async def tally_webhook(request: Request, background_tasks: BackgroundTasks):
         logger.info(f"🔍 Answers array: {answers}")
         
         # Field reference mapping
-        ref_map = {
-            "full_name": "question_BxOPLR",
-            "birthdate": "question_eRqGBl",
-            "email": "question_kNDV0o",
-            "spiritual_focus": "question_pDjl08"
-        }
+        # Field reference mapping (update with your actual Tally field refs)
+ref_map = {
+    "full_name": "question_BxOPLR",
+    "birthdate": "question_eRqGBl",
+    "birthtime": "question_X0eADY",
+    "birthplace": "question_8xdDKP",
+    "email": "question_kNDV0o",
+    "report_type": "question_0OE0xj",
+    "spiritual_focus": "question_pDjl08"
+}
 
-        def by_ref(ref_key):
-            ref = ref_map.get(ref_key)
-            for a in answers:
-                if a.get("key") == ref:
-                    return a.get("value", "")
-            return ""
+# Report type ID to text mapping
+report_type_map = {
+    "4c34cb27-c5be-47bb-abd9-a9f4b5993020": "Numerology Nexus",
+    "9c4433ce-ebbb-4c28-bfd8-edd06a34bfff": "Deep Dive Birth Chart",
+    "92e90bec-9a42-456a-92c3-de1b0e0df9d8": "Love Blueprint",
+    "34233ae1-8a64-4983-bad6-fd8266122750": "Career Code",
+    "40f8b83b-557e-4778-97ea-aa3003eac86e": "Life Purpose",
+    "7f27fc14-bf3b-4887-a40a-08953e6738f8": "Future Outlook",
+    "62fb1e90-b505-453b-97c0-7cddc344b951": "Human Design",
+    "a8fdc0ac-e34c-4c98-bb4b-5a811dbfdcca": "Starseed Lineage",
+    "5bfc4de1-a41a-4356-aed0-5497d9dad4db": "Cosmic Calendar (One Time Purchase)",
+    "748712f0-a60f-4bd0-b0fb-cd50b4778aa0": "Cosmic Calendar (Monthly Subscription)",
+    "072c71a1-7ee3-45ba-b2eb-8ebdc494a484": "Astrocartography",
+    "fda599e2-8f77-48a7-add5-396af4f0e5d9": "ShadowWork Workbook"
+}
 
-        # Extract and validate data
-        name = by_ref("full_name").strip()
-        birthdate = by_ref("birthdate").strip()
-        birthtime = by_ref("birthtime").strip() if by_ref("birthtime") else "12:00"
-        birthplace = by_ref("birthplace").strip() if by_ref("birthplace") else "San Francisco, CA"
-        email = by_ref("email").strip().lower()
-        focus = by_ref("spiritual_focus").strip() if by_ref("spiritual_focus") else "personal growth"
-        report_type = by_ref("report_type").strip() if by_ref("report_type") else "Numerology Nexus"
+def by_ref(ref_key):
+    """Extract field value by reference key"""
+    ref = ref_map.get(ref_key)
+    for a in answers:
+        if a.get("key") == ref:
+            value = a.get("value", "")
+            # Handle dropdown (returns list of IDs)
+            if isinstance(value, list) and len(value) > 0:
+                return value[0]  # Return first selected ID
+            return value if value else ""
+    return ""
 
-        logger.info(f"✅ Extracted fields: name={name}, email={email}, birthdate={birthdate}")
+# Extract and validate data
+name = by_ref("full_name").strip()
+birthdate = by_ref("birthdate").strip()
+birthtime = by_ref("birthtime").strip() or "12:00"  # Default to noon
+birthplace = by_ref("birthplace").strip() or "Minneapolis, MN"  # Default location
+email = by_ref("email").strip()
+report_type_id = by_ref("report_type").strip()
+focus = by_ref("spiritual_focus").strip() or "spiritual growth"
+
+# Convert report type ID to text
+report_type = report_type_map.get(report_type_id, "Deep Dive Birth Chart")
+
+logger.info(f"✅ Extracted fields: name={name}, email={email}, birthdate={birthdate}, birthtime={birthtime}, birthplace={birthplace}, report_type={report_type}")
         
         # Validation
         if not all([name, birthdate, email]):
