@@ -13,7 +13,7 @@ swe.set_ephe_path(None)
 def get_coordinates_and_timezone(location_string):
     """Convert location string to coordinates and timezone"""
     try:
-        geolocator = Nominatim(user_agent="sacredspace_astrology")
+        geolocator = Nominatim(user_agent="soul_api", timeout=10)
         location = geolocator.geocode(location_string)
         
         if not location:
