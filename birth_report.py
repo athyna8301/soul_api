@@ -31,7 +31,7 @@ def generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_
         local_dt = dt.replace(tzinfo=ZoneInfo(tz))
 
         # Calculate astrology chart
-        chart = calculate_chart(birthdate, birthtime, birthplace, lat, lon, tz)
+        chart = calculate_chart(birthdate, birthtime, birthplace)
         
         if not chart:
             raise Exception("Failed to calculate chart")
