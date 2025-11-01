@@ -9,8 +9,15 @@ logger = logging.getLogger(__name__)
 
 # Set ephemeris path (Render will use default)
 import os
+# Try multiple possible paths
 ephe_path = os.path.join(os.path.dirname(__file__), 'ephe')
+if not os.path.exists(ephe_path):
+    ephe_path = '/opt/render/project/src/ephe'
+if not os.path.exists(ephe_path):
+    ephe_path = None  # Use default
+    
 swe.set_ephe_path(ephe_path)
+print(f"Ephemeris path set to: {ephe_path}")
 
 def get_coordinates_and_timezone(location_string):
     """Convert location string to coordinates and timezone"""
