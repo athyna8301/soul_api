@@ -211,10 +211,11 @@ SacredSpace: Through The Cosmic Lens"""
 def generate_and_send_report(name, birthdate, birthtime, birthplace, email, focus, report_type):
     """Generate report and send delivery email"""
     try:
-        from birth_report import generate_birth_report
+        logger.info(f"🔍 DEBUG: Received in generate_and_send_report - birthplace={birthplace}, birthtime={birthtime}")
+        from birth_report import generate_birth_chart_report
         
         # Generate report
-        pdf_path = generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_type)
+        pdf_path = generate_birth_chart_report(name, birthdate, birthtime, birthplace, focus, email)
         logger.info(f"Report generated: {pdf_path}")
         
         # Send delivery email with report
