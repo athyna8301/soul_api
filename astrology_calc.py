@@ -8,7 +8,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Set ephemeris path (Render will use default)
-swe.set_ephe_path(None)
+import os
+ephe_path = os.path.join(os.path.dirname(__file__), 'ephe')
+swe.set_ephe_path(ephe_path)
 
 def get_coordinates_and_timezone(location_string):
     """Convert location string to coordinates and timezone"""
