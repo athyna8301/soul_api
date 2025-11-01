@@ -1,265 +1,182 @@
-from timezonefinder import TimezoneFinder
-from geopy.geocoders import Nominatim
-from datetime import datetime
-from zoneinfo import ZoneInfo
-from fpdf import FPDF
 import os
+from fpdf import FPDF
+from datetime import datetime
 import logging
 from astrology_calc import calculate_chart
 
 logger = logging.getLogger(__name__)
 
-def generate_birth_report(name, birthdate, birthtime, birthplace, focus, report_type):
-    """
-    Generate personalized birth chart report with trauma-informed language
-    """
+def generate_birth_chart_report(name, birthdate, birthtime, birthplace, focus, email):
+    """Generate birth chart report"""
     try:
-        # Geocoding
-        geo = Nominatim(user_agent="sacredspace_cosmic_lens")
-        loc = geo.geocode(birthplace)
-        if not loc:
-            raise Exception(f"Could not locate: {birthplace}")
-
-        lat, lon = loc.latitude, loc.longitude
-
-        # Timezone lookup
-        tf = TimezoneFinder()
-        tz = tf.timezone_at(lat=lat, lng=lon)
-
-        # Parse datetime
-        dt = datetime.strptime(f"{birthdate} {birthtime}", "%Y-%m-%d %H:%M")
-        local_dt = dt.replace(tzinfo=ZoneInfo(tz))
-
-        # Calculate astrology chart
-        chart = calculate_chart(birthdate, birthtime, birthplace)
+        logger.info(f"Generating birth chart for {name}")
         
-        if not chart:
-            raise Exception("Failed to calculate chart")
-
-        # Generate report content
-        content = generate_report_content(name, local_dt, birthplace, lat, lon, tz, focus, report_type, chart)
-
-        # Create reports directory
-        reports_dir = os.path.join(os.getcwd(), "reports")
-        try:
-            if os.path.exists(reports_dir) and not os.path.isdir(reports_dir):
-                os.remove(reports_dir)
-            os.makedirs(reports_dir, exist_ok=True)
-        except Exception as e:
-            logger.warning(f"Could not create reports folder: {e}")
-
-        filename = f"{name.replace(' ', '_')}_{report_type.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
-        path = os.path.join(reports_dir, filename)
-
-        create_pdf(path, content, name, report_type)
-
-        logger.info(f"Report generated successfully: {path}")
-        return path
-
+        # Calculate chart
+        chart_data = calculate_chart(birthdate, birthtime, birthplace)
+        
+        # Generate content
+        content = generate_report_content(name, birthdate, birthtime, birthplace, chart_data, focus)
+        
+        # Create PDF
+        pdf_path = f"reports/{email.replace('@', '_at_')}_birth_chart.pdf"
+        os.makedirs("reports", exist_ok=True)
+        create_pdf(pdf_path, content, name, "Deep Dive Birth Chart")
+        
+        logger.info(f"Birth chart report generated: {pdf_path}")
+        return pdf_path
+        
     except Exception as e:
-        logger.error(f"Error generating report: {str(e)}")
+        logger.error(f"Error generating report: {e}")
         raise
 
-
-def generate_report_content(name, local_dt, birthplace, lat, lon, tz, focus, report_type, chart):
-    """
-    Generate trauma-informed, empowering report content with real astrology data
-    """
+def generate_report_content(name, birthdate, birthtime, birthplace, chart_data, focus):
+    """Generate report content from chart data"""
     
-    planets = chart.get("planets", {})
-    ascendant = chart.get("ascendant", {})
-    midheaven = chart.get("midheaven", {})
-    
-    sun = planets.get(0, {})
-    moon = planets.get(1, {})
-    mercury = planets.get(2, {})
-    venus = planets.get(3, {})
-    mars = planets.get(4, {})
-    jupiter = planets.get(5, {})
-    saturn = planets.get(6, {})
+    # Format coordinates and timezone
+    lat = chart_data['latitude']
+    lon = chart_data['longitude']
+    tz = chart_data['timezone']
     
     content = f"""
-═══════════════════════════════════════════════════
-    SACREDSPACE: THROUGH THE COSMIC LENS
-    {report_type}
-═══════════════════════════════════════════════════
+DEEP DIVE BIRTH CHART REPORT
+For {name}
 
-Prepared for: {name}
-Date: {datetime.now().strftime('%B %d, %Y')}
-
-═══════════════════════════════════════════════════
-YOUR BIRTH INFORMATION
-═══════════════════════════════════════════════════
-
-Birth Date & Time: {local_dt.strftime('%B %d, %Y at %I:%M %p %Z')}
-Birth Location: {birthplace}
-Coordinates: {lat:.4f}°N, {lon:.4f}°W
+Birth Information:
+Date: {birthdate}
+Time: {birthtime}
+Place: {birthplace}
+Coordinates: {lat:.4f} N, {lon:.4f} W
 Timezone: {tz}
 
 Your Spiritual Focus: {focus}
 
-═══════════════════════════════════════════════════
+===================================
 YOUR COSMIC BLUEPRINT
-═══════════════════════════════════════════════════
+===================================
 
-Dear {name},
+THE BIG THREE
 
-This reading is more than astrology—it's a sacred mirror reflecting your soul's journey. 
-As you read, remember: you are not defined by your chart. You are empowered by it.
+Sun Sign: {chart_data['sun']['sign']} at {chart_data['sun']['degree']:.2f} degrees
+Your core essence, life force, and authentic self.
 
-═══════════════════════════════════════════════════
-YOUR SUN SIGN: THE CORE OF WHO YOU ARE
-═══════════════════════════════════════════════════
+Moon Sign: {chart_data['moon']['sign']} at {chart_data['moon']['degree']:.2f} degrees
+Your emotional nature, inner world, and subconscious patterns.
 
-Sun in {sun.get('sign', 'Unknown')} ({sun.get('degree', 0)}°)
+Rising Sign (Ascendant): {chart_data['ascendant']['sign']} at {chart_data['ascendant']['degree']:.2f} degrees
+Your outer personality, how others see you, and your life path.
 
-Your sun represents your essential self, your life force, your divine spark. 
-This is who you are becoming.
+===================================
+PLANETARY POSITIONS
+===================================
 
-The {sun.get('sign', 'Unknown')} Sun radiates authenticity and creative power. 
-Your core identity is built on the qualities of this sign—embrace them fully.
+Mercury in {chart_data['mercury']['sign']} at {chart_data['mercury']['degree']:.2f} degrees
+Communication, thinking, and mental processes.
 
-**Shadow Work Prompt:**
-Where in your life are you dimming your light to make others comfortable? 
-What would it feel like to shine fully?
+Venus in {chart_data['venus']['sign']} at {chart_data['venus']['degree']:.2f} degrees
+Love, relationships, values, and what brings you pleasure.
 
-**Ritual for Alignment:**
-Light a gold or yellow candle. Speak aloud: "I honor my authentic self. 
-I am worthy of taking up space."
+Mars in {chart_data['mars']['sign']} at {chart_data['mars']['degree']:.2f} degrees
+Drive, passion, anger, and how you take action.
 
-═══════════════════════════════════════════════════
-YOUR MOON SIGN: YOUR EMOTIONAL TRUTH
-═══════════════════════════════════════════════════
+Jupiter in {chart_data['jupiter']['sign']} at {chart_data['jupiter']['degree']:.2f} degrees
+Growth, expansion, luck, and abundance.
 
-Moon in {moon.get('sign', 'Unknown')} ({moon.get('degree', 0)}°)
+Saturn in {chart_data['saturn']['sign']} at {chart_data['saturn']['degree']:.2f} degrees
+Discipline, responsibility, lessons, and karmic patterns.
 
-Your moon reveals your emotional needs, your inner child, your intuitive wisdom. 
-This is how you feel safe and nourished.
+Uranus in {chart_data['uranus']['sign']} at {chart_data['uranus']['degree']:.2f} degrees
+Innovation, rebellion, sudden changes, and awakening.
 
-The {moon.get('sign', 'Unknown')} Moon seeks emotional security through {moon.get('sign', 'Unknown').lower()} qualities. 
-Honor your feelings—they are your inner compass.
+Neptune in {chart_data['neptune']['sign']} at {chart_data['neptune']['degree']:.2f} degrees
+Dreams, intuition, spirituality, and illusions.
 
-**Shadow Work Prompt:**
-What emotions were you taught to suppress? How can you honor them now?
+Pluto in {chart_data['pluto']['sign']} at {chart_data['pluto']['degree']:.2f} degrees
+Transformation, power, death/rebirth, and deep healing.
 
-**Ritual for Healing:**
-During the next full moon, write a letter to your younger self.
-Burn it safely and release old emotional patterns.
+===================================
+LUNAR NODES & CHIRON
+===================================
 
-═══════════════════════════════════════════════════
-YOUR RISING SIGN: THE MASK YOU WEAR
-═══════════════════════════════════════════════════
+North Node in {chart_data['north_node']['sign']} at {chart_data['north_node']['degree']:.2f} degrees
+Your soul's purpose and destiny in this lifetime.
 
-Ascendant in {ascendant.get('sign', 'Unknown')} ({ascendant.get('degree', 0)}°)
+South Node in {chart_data['south_node']['sign']} at {chart_data['south_node']['degree']:.2f} degrees
+Past life gifts and patterns to release.
 
-Your rising sign is your social persona, the energy you project.
-It's not fake—it's your interface with the world.
+Chiron in {chart_data['chiron']['sign']} at {chart_data['chiron']['degree']:.2f} degrees
+Your deepest wound and greatest healing gift.
 
-The {ascendant.get('sign', 'Unknown')} Ascendant presents you as [qualities]. 
-This is how others perceive your energy before they know your depth.
-
-═══════════════════════════════════════════════════
-YOUR MERCURY: HOW YOU COMMUNICATE
-═══════════════════════════════════════════════════
-
-Mercury in {mercury.get('sign', 'Unknown')} ({mercury.get('degree', 0)}°)
-
-Mercury governs your communication style, thinking patterns, and how you process information.
-Your {mercury.get('sign', 'Unknown')} Mercury speaks with [communication style].
-
-═══════════════════════════════════════════════════
-YOUR VENUS: LOVE & VALUES
-═══════════════════════════════════════════════════
-
-Venus in {venus.get('sign', 'Unknown')} ({venus.get('degree', 0)}°)
-
-Venus reveals what you love, how you love, and what you value.
-Your {venus.get('sign', 'Unknown')} Venus seeks [love style] in relationships and beauty.
-
-═══════════════════════════════════════════════════
-YOUR MARS: PASSION & ACTION
-═══════════════════════════════════════════════════
-
-Mars in {mars.get('sign', 'Unknown')} ({mars.get('degree', 0)}°)
-
-Mars is your warrior energy—how you pursue goals and express desire.
-Your {mars.get('sign', 'Unknown')} Mars acts with [action style] and determination.
-
-═══════════════════════════════════════════════════
-YOUR JUPITER: EXPANSION & ABUNDANCE
-═══════════════════════════════════════════════════
-
-Jupiter in {jupiter.get('sign', 'Unknown')} ({jupiter.get('degree', 0)}°)
-
-Jupiter brings luck, growth, and expansion. Your {jupiter.get('sign', 'Unknown')} Jupiter 
-expands through [expansion style] and attracts abundance through faith.
-
-═══════════════════════════════════════════════════
-YOUR SATURN: LESSONS & MASTERY
-═══════════════════════════════════════════════════
-
-Saturn in {saturn.get('sign', 'Unknown')} ({saturn.get('degree', 0)}°)
-
-Saturn teaches through discipline and time. Your {saturn.get('sign', 'Unknown')} Saturn 
-builds mastery through [lesson style] and rewards patience with lasting achievement.
-
-═══════════════════════════════════════════════════
-YOUR MIDHEAVEN: CAREER & PUBLIC LIFE
-═══════════════════════════════════════════════════
-
-Midheaven in {midheaven.get('sign', 'Unknown')} ({midheaven.get('degree', 0)}°)
-
-Your Midheaven shows your career path and public reputation.
-The {midheaven.get('sign', 'Unknown')} Midheaven suggests a calling toward [career themes].
-
-═══════════════════════════════════════════════════
-CLOSING WISDOM
-═══════════════════════════════════════════════════
-
-{name}, your chart is a map, not a mandate. You have free will.
-You have choice. You have power.
-
-Use this reading as a tool for self-compassion, not self-judgment.
-The stars don't define you. They celebrate you.
-
-With cosmic blessings,
-Athyna Luna
-SacredSpace: Through The Cosmic Lens 🌙
-
-═══════════════════════════════════════════════════
-NEXT STEPS
-═══════════════════════════════════════════════════
-
-Ready to go deeper?
-• Career Code: Discover your professional purpose
-• Love Blueprint: Understand your relationship patterns
-• Life Purpose: Align with your soul's mission
-
-Visit: throughthecosmiclens.com
-Email: athyna@sacredspaceastrology.com
+===================================
+HOUSE SYSTEM
+===================================
 """
+
+    # Add houses
+    for i, house in enumerate(chart_data['houses'], 1):
+        content += f"\nHouse {i}: {house['sign']} at {house['degree']:.2f} degrees"
     
+    content += """
+
+===================================
+MAJOR ASPECTS
+===================================
+"""
+
+    # Add aspects
+    if chart_data['aspects']:
+        for aspect in chart_data['aspects']:
+            content += f"\n{aspect['planet1']} {aspect['aspect']} {aspect['planet2']} (orb: {aspect['orb']:.2f} degrees)"
+    else:
+        content += "\nNo major aspects within orb."
+
+    content += """
+
+===================================
+INTERPRETATION & GUIDANCE
+===================================
+
+This chart reveals your unique cosmic blueprint. Each planetary placement, 
+house position, and aspect weaves together to tell the story of your soul's 
+journey in this lifetime.
+
+Your spiritual focus on "{focus}" is deeply connected to your chart patterns.
+Look to your North Node for your soul's calling, your Chiron for healing 
+opportunities, and your planetary placements for how to express your gifts.
+
+Remember: You are not defined by your chart - you are empowered by it.
+The stars show possibilities, but you create your destiny.
+
+Blessed be on your cosmic journey.
+
+---
+Report generated by SacredSpace: Through The Cosmic Lens
+""".replace("{focus}", focus)
+
     return content
 
 
 def create_pdf(path, content, name, report_type):
     """Create PDF from content"""
-def create_pdf(path, content, name, report_type):
-    """Create PDF from content"""
-    from fpdf import FPDF
     
     class PDF(FPDF):
         def header(self):
             self.set_font('Arial', 'B', 16)
-            self.cell(0, 10, f'{report_type} Report', 0, 1, 'C')
+            self.cell(0, 10, f'{report_type}', 0, 1, 'C')
+            self.set_font('Arial', 'I', 10)
+            self.cell(0, 5, 'SacredSpace: Through The Cosmic Lens', 0, 1, 'C')
             self.ln(5)
+        
+        def footer(self):
+            self.set_y(-15)
+            self.set_font('Arial', 'I', 8)
+            self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
     
     pdf = PDF()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.set_font("Arial", size=10)
     
-    # Replace special characters before adding to PDF
+    # Replace any remaining special characters
     content = content.replace('°', ' degrees')
     content = content.replace('♈', 'Aries')
     content = content.replace('♉', 'Taurus')
@@ -273,12 +190,15 @@ def create_pdf(path, content, name, report_type):
     content = content.replace('♑', 'Capricorn')
     content = content.replace('♒', 'Aquarius')
     content = content.replace('♓', 'Pisces')
+    content = content.replace('"', '"')
+    content = content.replace('"', '"')
+    content = content.replace(''', "'")
+    content = content.replace(''', "'")
+    content = content.replace('—', '-')
+    content = content.replace('–', '-')
     
     # Add content
     pdf.multi_cell(0, 5, content)
     
     # Save
     pdf.output(path)
-
-
-
