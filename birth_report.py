@@ -244,14 +244,41 @@ Email: athyna@sacredspaceastrology.com
 
 def create_pdf(path, content, name, report_type):
     """Create PDF from content"""
-    pdf = FPDF()
+def create_pdf(path, content, name, report_type):
+    """Create PDF from content"""
+    from fpdf import FPDF
+    
+    class PDF(FPDF):
+        def header(self):
+            self.set_font('Arial', 'B', 16)
+            self.cell(0, 10, f'{report_type} Report', 0, 1, 'C')
+            self.ln(5)
+    
+    pdf = PDF()
     pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
     pdf.set_font("Arial", size=10)
+    
+    # Replace special characters before adding to PDF
+    content = content.replace('°', ' degrees')
+    content = content.replace('♈', 'Aries')
+    content = content.replace('♉', 'Taurus')
+    content = content.replace('♊', 'Gemini')
+    content = content.replace('♋', 'Cancer')
+    content = content.replace('♌', 'Leo')
+    content = content.replace('♍', 'Virgo')
+    content = content.replace('♎', 'Libra')
+    content = content.replace('♏', 'Scorpio')
+    content = content.replace('♐', 'Sagittarius')
+    content = content.replace('♑', 'Capricorn')
+    content = content.replace('♒', 'Aquarius')
+    content = content.replace('♓', 'Pisces')
     
     # Add content
     pdf.multi_cell(0, 5, content)
     
     # Save
     pdf.output(path)
+
 
 
