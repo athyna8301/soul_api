@@ -13,6 +13,8 @@ def generate_birth_chart_report(name, birthdate, birthtime, birthplace, focus, e
         
         # Calculate chart
         chart_data = calculate_chart(birthdate, birthtime, birthplace)
+        logger.info(f"🔍 DEBUG: chart_data keys: {chart_data.keys()}")
+        logger.info(f"🔍 DEBUG: chart_data content: {chart_data}")
         
         # Generate content
         content = generate_report_content(name, birthdate, birthtime, birthplace, chart_data, focus)
