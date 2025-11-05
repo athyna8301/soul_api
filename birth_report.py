@@ -133,7 +133,7 @@ This chart reveals your unique cosmic blueprint. Each planetary placement,
 house position, and aspect weaves together to tell the story of your soul's 
 journey in this lifetime.
 
-Your spiritual focus on \"""" + focus + """\" is deeply connected to your chart patterns.
+Your spiritual focus on '""" + focus + """' is deeply connected to your chart patterns.
 Look to your North Node for your soul's calling, your Chiron for healing 
 opportunities, and your planetary placements for how to express your gifts.
 
