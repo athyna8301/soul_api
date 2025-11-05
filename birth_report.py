@@ -21,8 +21,8 @@ def generate_birth_chart_report(name, birthdate, birthtime, birthplace, focus, e
         
         # Create PDF
         pdf_path = f"reports/{email.replace('@', '_at_')}_birth_chart.pdf"
-if not os.path.exists("reports"):
-    os.makedirs("reports")
+        if not os.path.exists("reports"):
+            os.makedirs("reports")
         create_pdf(pdf_path, content, name, "Deep Dive Birth Chart")
         
         logger.info(f"Birth chart report generated: {pdf_path}")
