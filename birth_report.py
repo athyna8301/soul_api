@@ -19,16 +19,19 @@ def generate_ai_interpretation(name, birthdate, birthtime, birthplace, chart_dat
         
         logger.info(f"API key found: {api_key[:10]}...")  # Log first 10 chars for debugging
         client = OpenAI(api_key=api_key)
+    except Exception as e:
+        logger.error(f"Error initializing OpenAI client: {e}")
+        raise
 
         
-        # Extract key chart data
-        sun = chart_data['planets']['Sun']
-        moon = chart_data['planets']['Moon']
-        mercury = chart_data['planets']['Mercury']
-        venus = chart_data['planets']['Venus']
-        mars = chart_data['planets']['Mars']
-        jupiter = chart_data['planets']['Jupiter']
-        saturn = chart_data['planets']['Saturn']
+    # Extract key chart data
+    sun = chart_data['planets']['Sun']
+     moon = chart_data['planets']['Moon']
+     mercury = chart_data['planets']['Mercury']
+     venus = chart_data['planets']['Venus']
+     mars = chart_data['planets']['Mars']
+     jupiter = chart_data['planets']['Jupiter']
+     saturn = chart_data['planets']['Saturn']
         
         # Get rising sign
         # Get rising sign (calculate it directly)
