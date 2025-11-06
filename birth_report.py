@@ -10,7 +10,16 @@ def generate_ai_interpretation(name, birthdate, birthtime, birthplace, chart_dat
     """Generate AI-powered astrological interpretation"""
     try:
         # Initialize OpenAI client
-        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        import os
+        # Initialize OpenAI client
+        api_key = os.environ.get('OPENAI_API_KEY')
+        if not api_key:
+            logger.error("OPENAI_API_KEY environment variable not set!")
+            raise ValueError("OPENAI_API_KEY environment variable not set")
+        
+        logger.info(f"API key found: {api_key[:10]}...")  # Log first 10 chars for debugging
+        client = OpenAI(api_key=api_key)
+
         
         # Extract key chart data
         sun = chart_data['planets']['Sun']
