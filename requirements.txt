@@ -7,3 +7,4 @@ geopy
 python-dotenv
 pyswisseph
 pytz
+openai

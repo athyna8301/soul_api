@@ -1,10 +1,144 @@
 import os
 from fpdf import FPDF
 from datetime import datetime
+from openai import OpenAI
 import logging
 from astrology_calc import calculate_chart
 
 logger = logging.getLogger(__name__)
+def generate_ai_interpretation(name, birthdate, birthtime, birthplace, chart_data, focus):
+    """Generate AI-powered astrological interpretation"""
+    try:
+        # Initialize OpenAI client
+        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        
+        # Extract key chart data
+        sun = chart_data['planets']['Sun']
+        moon = chart_data['planets']['Moon']
+        mercury = chart_data['planets']['Mercury']
+        venus = chart_data['planets']['Venus']
+        mars = chart_data['planets']['Mars']
+        jupiter = chart_data['planets']['Jupiter']
+        saturn = chart_data['planets']['Saturn']
+        
+        # Get rising sign
+        asc_degree = chart_data['houses']['ascendant']
+        rising_sign = get_zodiac_sign(asc_degree)
+        
+        # Create detailed prompt
+        prompt = f"""You are a professional astrologer with expertise in trauma-informed spiritual guidance, shadow work, and empowerment. Write as a Sacred Warrior-Healer.
+
+Generate a comprehensive Deep Dive Birth Chart interpretation for {name}.
+
+BIRTH DATA:
+- Born: {birthdate} at {birthtime} in {birthplace}
+- Coordinates: {chart_data['latitude']:.4f}°, {chart_data['longitude']:.4f}°
+- Timezone: {chart_data['timezone']}
+
+CHART PLACEMENTS:
+- Sun: {sun['sign']} at {sun['degree']:.1f}° {'(Retrograde)' if sun['retrograde'] else ''}
+- Moon: {moon['sign']} at {moon['degree']:.1f}° {'(Retrograde)' if moon['retrograde'] else ''}
+- Rising (Ascendant): {rising_sign} at {asc_degree:.1f}°
+- Mercury: {mercury['sign']} at {mercury['degree']:.1f}° {'(Retrograde)' if mercury['retrograde'] else ''}
+- Venus: {venus['sign']} at {venus['degree']:.1f}° {'(Retrograde)' if venus['retrograde'] else ''}
+- Mars: {mars['sign']} at {mars['degree']:.1f}° {'(Retrograde)' if mars['retrograde'] else ''}
+- Jupiter: {jupiter['sign']} at {jupiter['degree']:.1f}° {'(Retrograde)' if jupiter['retrograde'] else ''}
+- Saturn: {saturn['sign']} at {saturn['degree']:.1f}° {'(Retrograde)' if saturn['retrograde'] else ''}
+
+SPIRITUAL FOCUS: {focus}
+
+Write a deeply personalized, mystical, and empowering interpretation (2500-3000 words) that includes:
+
+1. CORE ESSENCE (Sun Sign)
+   - Soul identity and life purpose
+   - Natural gifts and authentic self-expression
+   - How to embody this energy fully
+
+2. EMOTIONAL LANDSCAPE (Moon Sign)
+   - Emotional needs and inner world
+   - How you process feelings and find comfort
+   - Shadow work prompts for emotional healing
+
+3. OUTER PERSONA (Rising Sign)
+   - How you show up in the world
+   - First impressions and life approach
+   - Your cosmic mask and authentic presence
+
+4. MIND & COMMUNICATION (Mercury)
+   - How you think and communicate
+   - Learning style and mental gifts
+   - Ways to honor your unique voice
+
+5. LOVE & VALUES (Venus)
+   - How you love and what you value
+   - Relationship patterns and desires
+   - Self-love practices
+
+6. DRIVE & ACTION (Mars)
+   - How you take action and assert yourself
+   - Passion, anger, and healthy boundaries
+   - Sacred rage and empowered action
+
+7. EXPANSION & WISDOM (Jupiter)
+   - Where you find meaning and growth
+   - Natural abundance and optimism
+   - Spiritual gifts
+
+8. DISCIPLINE & MASTERY (Saturn)
+   - Life lessons and karmic themes
+   - Where you build lasting foundations
+   - Shadow work for Saturn healing
+
+9. SACRED GUIDANCE
+   - Personalized guidance for their spiritual focus: "{focus}"
+   - Ritual recommendations aligned with their chart
+   - Empowering affirmations
+   - Next steps on their cosmic journey
+
+Use mystical, poetic language. Be trauma-informed, compassionate, and empowering. Avoid jargon. Make it feel like a sacred conversation between souls.
+
+End with a powerful closing that honors their cosmic blueprint and encourages their transformation."""
+
+        # Call OpenAI API
+        logger.info("Generating AI interpretation...")
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",  # Cost-effective and great quality
+            messages=[
+                {"role": "system", "content": "You are a professional astrologer specializing in trauma-informed spiritual guidance, shadow work, and empowerment. You write as a Sacred Warrior-Healer with mystical, compassionate, and empowering language."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.8,  # Creative but coherent
+            max_tokens=4000   # Enough for 2500-3000 words
+        )
+        
+        interpretation = response.choices[0].message.content
+        logger.info(f"AI interpretation generated: {len(interpretation)} characters")
+        
+        return interpretation
+        
+    except Exception as e:
+        logger.error(f"Error generating AI interpretation: {e}")
+        # Return fallback content if AI fails
+        return f"""
+# Your Cosmic Blueprint
+
+Dear {name},
+
+Your birth chart reveals a unique cosmic signature that holds the keys to your soul's journey.
+
+**Sun in {sun['sign']}**: Your core essence radiates the energy of {sun['sign']}, guiding your life purpose and authentic self-expression.
+
+**Moon in {moon['sign']}**: Your emotional world is colored by {moon['sign']}, showing how you nurture yourself and process feelings.
+
+**Rising in {rising_sign}**: You meet the world through the lens of {rising_sign}, shaping how others perceive you and how you approach life.
+
+This is just the beginning of understanding your cosmic blueprint. Each planetary placement holds deeper wisdom waiting to be discovered.
+
+Your spiritual focus on "{focus}" is woven throughout your chart, offering guidance for your journey ahead.
+
+With cosmic blessings,
+SacredSpace: Through The Cosmic Lens 🌙
+"""
 
 def generate_birth_chart_report(name, birthdate, birthtime, birthplace, focus, email):
     """Generate birth chart report"""
@@ -40,122 +174,51 @@ def generate_birth_chart_report(name, birthdate, birthtime, birthplace, focus, e
         raise
 
 def generate_report_content(name, birthdate, birthtime, birthplace, chart_data, focus):
-    """Generate report content from chart data"""
+    """Generate report content from chart data using AI"""
     
-    # Format coordinates and timezone
-    lat = chart_data['latitude']
-    lon = chart_data['longitude']
-    tz = chart_data['timezone']
+    # Generate AI interpretation
+    ai_content = generate_ai_interpretation(name, birthdate, birthtime, birthplace, chart_data, focus)
     
-    # Extract planets and houses
-    planets = chart_data['planets']
-    houses = chart_data['houses']
+    # Build complete report
+    content = f"""# Deep Dive Birth Chart Report
+## For {name}
+
+**Birth Details:**
+- Date: {birthdate}
+- Time: {birthtime}
+- Place: {birthplace}
+- Location: {chart_data['full_address']}
+- Coordinates: {chart_data['latitude']:.4f}°, {chart_data['longitude']:.4f}°
+- Timezone: {chart_data['timezone']}
+
+---
+
+{ai_content}
+
+---
+
+## Technical Chart Data
+
+**Planetary Positions:**
+"""
     
-    # Build content piece by piece
-    lines = []
-    lines.append("DEEP DIVE BIRTH CHART REPORT")
-    lines.append(f"For {name}")
-    lines.append("")
-    lines.append("Birth Information:")
-    lines.append(f"Date: {birthdate}")
-    lines.append(f"Time: {birthtime}")
-    lines.append(f"Place: {birthplace}")
-    lines.append(f"Coordinates: {lat:.4f} N, {lon:.4f} W")
-    lines.append(f"Timezone: {tz}")
-    lines.append("")
-    lines.append(f"Your Spiritual Focus: {focus}")
-    lines.append("")
-    lines.append("===================================")
-    lines.append("YOUR COSMIC BLUEPRINT")
-    lines.append("===================================")
-    lines.append("")
-    lines.append("THE BIG THREE")
-    lines.append("")
-    lines.append(f"Sun Sign: {planets['Sun']['sign']} at {planets['Sun']['degree']:.2f} degrees")
-    lines.append("Your core essence, life force, and authentic self.")
-    lines.append("")
-    lines.append(f"Moon Sign: {planets['Moon']['sign']} at {planets['Moon']['degree']:.2f} degrees")
-    lines.append("Your emotional nature, inner world, and subconscious patterns.")
-    lines.append("")
-    asc_sign = get_sign_from_longitude(houses['ascendant'])
-    asc_deg = houses['ascendant'] % 30
-    lines.append(f"Rising Sign (Ascendant): {asc_sign} at {asc_deg:.2f} degrees")
-    lines.append("Your outer personality, how others see you, and your life path.")
-    lines.append("")
-    lines.append("===================================")
-    lines.append("PLANETARY POSITIONS")
-    lines.append("===================================")
-    lines.append("")
-    lines.append(f"Mercury in {planets['Mercury']['sign']} at {planets['Mercury']['degree']:.2f} degrees")
-    lines.append("Communication, thinking, and mental processes.")
-    lines.append("")
-    lines.append(f"Venus in {planets['Venus']['sign']} at {planets['Venus']['degree']:.2f} degrees")
-    lines.append("Love, relationships, values, and what brings you pleasure.")
-    lines.append("")
-    lines.append(f"Mars in {planets['Mars']['sign']} at {planets['Mars']['degree']:.2f} degrees")
-    lines.append("Drive, passion, anger, and how you take action.")
-    lines.append("")
-    lines.append(f"Jupiter in {planets['Jupiter']['sign']} at {planets['Jupiter']['degree']:.2f} degrees")
-    lines.append("Growth, expansion, luck, and abundance.")
-    lines.append("")
-    lines.append(f"Saturn in {planets['Saturn']['sign']} at {planets['Saturn']['degree']:.2f} degrees")
-    lines.append("Discipline, responsibility, lessons, and karmic patterns.")
-    lines.append("")
-    lines.append(f"Uranus in {planets['Uranus']['sign']} at {planets['Uranus']['degree']:.2f} degrees")
-    lines.append("Innovation, rebellion, sudden changes, and awakening.")
-    lines.append("")
-    lines.append(f"Neptune in {planets['Neptune']['sign']} at {planets['Neptune']['degree']:.2f} degrees")
-    lines.append("Dreams, intuition, spirituality, and illusions.")
-    lines.append("")
-    lines.append(f"Pluto in {planets['Pluto']['sign']} at {planets['Pluto']['degree']:.2f} degrees")
-    lines.append("Transformation, power, death/rebirth, and deep healing.")
-    lines.append("")
-    lines.append("===================================")
-    lines.append("LUNAR NODES & CHIRON")
-    lines.append("===================================")
-    lines.append("")
-    lines.append(f"North Node in {planets['North Node']['sign']} at {planets['North Node']['degree']:.2f} degrees")
-    lines.append("Your soul's purpose and destiny in this lifetime.")
-    lines.append("")
-    south_sign = get_opposite_sign(planets['North Node']['sign'])
-    south_deg = (planets['North Node']['longitude'] + 180) % 30
-    lines.append(f"South Node in {south_sign} at {south_deg:.2f} degrees")
-    lines.append("Past life gifts and patterns to release.")
-    lines.append("")
-    lines.append(f"Chiron in {planets['Chiron']['sign']} at {planets['Chiron']['degree']:.2f} degrees")
-    lines.append("Your deepest wound and greatest healing gift.")
-    lines.append("")
-    lines.append("===================================")
-    lines.append("HOUSE SYSTEM")
-    lines.append("===================================")
+    # Add planetary data
+    for planet, data in chart_data['planets'].items():
+        retro = " ℞" if data['retrograde'] else ""
+        content += f"\n- **{planet}**: {data['sign']} {data['degree']:.2f}°{retro}"
     
-    for i, cusp in enumerate(houses['cusps'], 1):
-        sign = get_sign_from_longitude(cusp)
-        degree = cusp % 30
-        lines.append(f"House {i}: {sign} at {degree:.2f} degrees")
+    # Add house data
+    content += "\n\n**House Cusps:**\n"
+    for i, cusp in enumerate(chart_data['houses']['cusps'], 1):
+        sign = get_zodiac_sign(cusp)
+        content += f"\n- House {i}: {sign} {cusp:.2f}°"
     
-    lines.append("")
-    lines.append("===================================")
-    lines.append("INTERPRETATION & GUIDANCE")
-    lines.append("===================================")
-    lines.append("")
-    lines.append("This chart reveals your unique cosmic blueprint. Each planetary placement,")
-    lines.append("house position, and aspect weaves together to tell the story of your soul's")
-    lines.append("journey in this lifetime.")
-    lines.append("")
-    lines.append(f"Your spiritual focus on '{focus}' is deeply connected to your chart patterns.")
-    lines.append("Look to your North Node for your soul's calling, your Chiron for healing")
-    lines.append("opportunities, and your planetary placements for how to express your gifts.")
-    lines.append("")
-    lines.append("Remember: You are not defined by your chart - you are empowered by it.")
-    lines.append("The stars show possibilities, but you create your destiny.")
-    lines.append("")
-    lines.append("Blessed be on your cosmic journey.")
-    lines.append("")
-    lines.append("---")
-    lines.append("Report generated by SacredSpace: Through The Cosmic Lens")
+    content += f"\n\n**Ascendant**: {get_zodiac_sign(chart_data['houses']['ascendant'])} {chart_data['houses']['ascendant']:.2f}°"
+    content += f"\n**Midheaven (MC)**: {get_zodiac_sign(chart_data['houses']['mc'])} {chart_data['houses']['mc']:.2f}°"
     
-    return "\n".join(lines)
+    content += "\n\n---\n\n*Report generated with love by SacredSpace: Through The Cosmic Lens* 🌙"
+    
+    return content
 
 
 def get_sign_from_longitude(longitude):
