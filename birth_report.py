@@ -31,8 +31,11 @@ def generate_ai_interpretation(name, birthdate, birthtime, birthplace, chart_dat
         saturn = chart_data['planets']['Saturn']
         
         # Get rising sign
-        asc_degree = chart_data['houses']['ascendant']
-        rising_sign = get_zodiac_sign(asc_degree)
+        # Get rising sign (calculate it directly)
+asc_degree = chart_data['houses']['ascendant']
+signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+         'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
+rising_sign = signs[int(asc_degree / 30) % 12]
         
         # Create detailed prompt
         prompt = f"""You are a professional astrologer with expertise in trauma-informed spiritual guidance, shadow work, and empowerment. Write as a Sacred Warrior-Healer.
