@@ -26,12 +26,12 @@ def generate_ai_interpretation(name, birthdate, birthtime, birthplace, chart_dat
         
     # Extract key chart data
     sun = chart_data['planets']['Sun']
-     moon = chart_data['planets']['Moon']
-     mercury = chart_data['planets']['Mercury']
-     venus = chart_data['planets']['Venus']
-     mars = chart_data['planets']['Mars']
-     jupiter = chart_data['planets']['Jupiter']
-     saturn = chart_data['planets']['Saturn']
+    moon = chart_data['planets']['Moon']
+    mercury = chart_data['planets']['Mercury']
+    venus = chart_data['planets']['Venus']
+    mars = chart_data['planets']['Mars']
+    jupiter = chart_data['planets']['Jupiter']
+    saturn = chart_data['planets']['Saturn']
         
         # Get rising sign
         # Get rising sign (calculate it directly)
