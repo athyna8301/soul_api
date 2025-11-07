@@ -95,16 +95,20 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     """Generate PDF report."""
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
+    pdf.set_font("Helvetica", "B", 16)
     pdf.cell(0, 10, f"Deep Dive Birth Chart", ln=True, align="C")
-    pdf.set_font("Arial", "", 10)
+    pdf.set_font("Helvetica", "", 10)
     pdf.cell(0, 5, f"For: {name}", ln=True)
     pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True)
     pdf.ln(5)
-    pdf.set_font("Arial", "", 9)
-    pdf.multi_cell(0, 5, content)
+    pdf.set_font("Helvetica", "", 9)
+    
+    # Clean content for PDF compatibility
+    content_clean = content.encode('latin-1', errors='replace').decode('latin-1')
+    pdf.multi_cell(0, 5, content_clean)
     
     filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
     pdf.output(filename)
     return filename
+
 
