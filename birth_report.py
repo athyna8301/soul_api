@@ -3,7 +3,6 @@ from openai import OpenAI
 from fpdf import FPDF
 from astrology_calc import calculate_chart
 import os
-from reportlab.lib.utils import ImageReader
 
 # Logo configuration
 LOGO_PATH = os.path.join(os.path.dirname(__file__), 'logos', 'NEW_LOGO.png')
