@@ -4,8 +4,9 @@ from fpdf import FPDF
 from astrology_calc import calculate_chart
 import os
 
-# Logo configuration
-LOGO_PATH = os.path.join(os.path.dirname(__file__), 'logos', 'NEW_LOGO.png')
+# Logo configuration (disabled for now)
+LOGO_PATH = None
+
 
 logger = logging.getLogger(__name__)
 
@@ -100,11 +101,12 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     pdf.add_page()
     
     # Add logo as watermark (top right corner)
-    try:
-        logo_path = "logos/NEW_LOGO.png"  # Change to your logo filename
-        pdf.image(logo_path, x=150, y=10, w=50)  # x, y position, width
-    except Exception as e:
-        logger.warning(f"Could not add logo: {e}")
+    # Logo handling (optional - skip if file doesn't exist)
+try:
+    if os.path.exists("logos/NEW_LOGO.png"):
+        pdf.image("logos/NEW_LOGO.png", x=150, y=10, w=50)
+except Exception as e:
+    logger.warning(f"Logo not added: {e}")
     
     # Title and info
     pdf.set_font("Helvetica", "B", 16)
