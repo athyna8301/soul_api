@@ -92,23 +92,33 @@ Use a warm, mystical, trauma-informed tone. Balance cosmic wisdom with practical
     return content
 
 def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_focus, content):
-    """Generate PDF report."""
+    """Generate PDF report with logo watermark."""
     pdf = FPDF()
     pdf.add_page()
+    
+    # Add logo as watermark (top right corner)
+    try:
+        logo_path = "logos/logo.png"  # Change to your logo filename
+        pdf.image(logo_path, x=150, y=10, w=50)  # x, y position, width
+    except Exception as e:
+        logger.warning(f"Could not add logo: {e}")
+    
+    # Title and info
     pdf.set_font("Helvetica", "B", 16)
     pdf.cell(0, 10, f"Deep Dive Birth Chart", ln=True, align="C")
     pdf.set_font("Helvetica", "", 10)
     pdf.cell(0, 5, f"For: {name}", ln=True)
     pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True)
     pdf.ln(5)
-    pdf.set_font("Helvetica", "", 9)
     
-    # Clean content for PDF compatibility
+    # Content
+    pdf.set_font("Helvetica", "", 9)
     content_clean = content.encode('latin-1', errors='replace').decode('latin-1')
     pdf.multi_cell(0, 5, content_clean)
     
     filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
     pdf.output(filename)
     return filename
+
 
 
