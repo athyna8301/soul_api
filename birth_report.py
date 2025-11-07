@@ -3,6 +3,10 @@ from openai import OpenAI
 from fpdf import FPDF
 from astrology_calc import calculate_chart
 import os
+from reportlab.lib.utils import ImageReader
+
+# Logo configuration
+LOGO_PATH = os.path.join(os.path.dirname(__file__), 'logos', 'NEW_LOGO.png')
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +102,7 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     
     # Add logo as watermark (top right corner)
     try:
-        logo_path = "logos/logo.png"  # Change to your logo filename
+        logo_path = "logos/NEW_LOGO.png"  # Change to your logo filename
         pdf.image(logo_path, x=150, y=10, w=50)  # x, y position, width
     except Exception as e:
         logger.warning(f"Could not add logo: {e}")
