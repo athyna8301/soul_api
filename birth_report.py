@@ -14,7 +14,7 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
         raise ValueError("OPENAI_API_KEY not set")
     
     try:
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key=api_key, base_url="https://api.openai.com/v1")
     except Exception as e:
         logger.error(f"Error initializing OpenAI client: {e}")
         raise
@@ -77,17 +77,18 @@ Please provide:
 Use a warm, mystical, trauma-informed tone. Balance cosmic wisdom with practical, actionable advice. Include journal prompts and reflection questions."""
 
     try:
-        response = client.messages.create(
-            model="gpt-4o-mini",
-            max_tokens=3000,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
-        )
-        content = response.content[0].text
-    except Exception as e:
-        logger.error(f"Error calling OpenAI: {e}")
-        raise
+        try:
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=3000,
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+    content = response.choices[0].message.content
+except Exception as e:
+    logger.error(f"Error calling OpenAI: {e}")
+    raise
 
     return content
 
