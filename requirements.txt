@@ -9,4 +9,4 @@ python-dotenv
 pyswisseph
 pytz
 openai
-"@ | Set-Content requirements.txt
+"@ | Set-Content requirements.txt -Encoding UTF8
