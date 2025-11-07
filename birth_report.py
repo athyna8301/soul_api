@@ -14,7 +14,7 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
         raise ValueError("OPENAI_API_KEY not set")
     
     try:
-        client = OpenAI(api_key=api_key, base_url="https://api.openai.com/v1")
+        client = OpenAI(api_key=api_key)
     except Exception as e:
         logger.error(f"Error initializing OpenAI client: {e}")
         raise
@@ -75,19 +75,19 @@ Please provide:
 11. Closing affirmation and encouragement
 
 Use a warm, mystical, trauma-informed tone. Balance cosmic wisdom with practical, actionable advice. Include journal prompts and reflection questions."""
-78
-79        try:
-80            response = client.chat.completions.create(
-81                model="gpt-4o-mini",
-82                max_tokens=3000,
-83                messages=[
-84                    {"role": "user", "content": prompt}
-85                ]
-86            )
-87            content = response.choices[0].message.content
-88        except Exception as e:
-89            logger.error(f"Error calling OpenAI: {e}")
-90            raise
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            max_tokens=3000,
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        content = response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error calling OpenAI: {e}")
+        raise
 
     return content
 
@@ -107,3 +107,4 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
     pdf.output(filename)
     return filename
+
