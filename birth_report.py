@@ -4,10 +4,6 @@ from fpdf import FPDF
 from astrology_calc import calculate_chart
 import os
 
-# Logo configuration (disabled for now)
-LOGO_PATH = None
-
-
 logger = logging.getLogger(__name__)
 
 def generate_report_content(name, birthdate, birthtime, birthplace, report_type, spiritual_focus):
@@ -17,113 +13,60 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
         logger.error("OPENAI_API_KEY not set")
         raise ValueError("OPENAI_API_KEY not set")
     
-    try:
-        client = OpenAI(api_key=api_key)
-    except Exception as e:
-        logger.error(f"Error initializing OpenAI client: {e}")
-        raise
-
-    # Calculate astrology chart
+    client = OpenAI(api_key=api_key)
+    
     try:
         chart_data = calculate_chart(birthdate, birthtime, birthplace)
     except Exception as e:
         logger.error(f"Error calculating chart: {e}")
-        raise
+        chart_data = {}
+    
+    prompt = f"""Create a personalized {report_type} report for {name} born on {birthdate} at {birthtime} in {birthplace}.
+Spiritual focus: {spiritual_focus}
 
-    # Extract key chart data
-    sun = chart_data['planets']['Sun']
-    moon = chart_data['planets']['Moon']
-    mercury = chart_data['planets']['Mercury']
-    venus = chart_data['planets']['Venus']
-    mars = chart_data['planets']['Mars']
-    jupiter = chart_data['planets']['Jupiter']
-    saturn = chart_data['planets']['Saturn']
+Chart data available: {chart_data}
 
-    # Get rising sign (calculate it directly)
-    asc_degree = chart_data['houses']['ascendant']
-    signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-             'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
-    rising_sign = signs[int(asc_degree / 30) % 12]
-
-    # Create detailed prompt
-    prompt = f"""You are a professional astrologer with expertise in trauma-informed spiritual guidance, shadow work, and empowerment coaching.
-
-Generate a comprehensive Deep Dive Birth Chart interpretation for {name}.
-
-BIRTH DATA:
-- Born: {birthdate} at {birthtime} in {birthplace}
-
-ASTROLOGICAL PLACEMENTS:
-- Sun: {sun['sign']} ({sun['degree']:.2f}°)
-- Moon: {moon['sign']} ({moon['degree']:.2f}°)
-- Rising Sign: {rising_sign}
-- Mercury: {mercury['sign']} ({mercury['degree']:.2f}°)
-- Venus: {venus['sign']} ({venus['degree']:.2f}°)
-- Mars: {mars['sign']} ({mars['degree']:.2f}°)
-- Jupiter: {jupiter['sign']} ({jupiter['degree']:.2f}°)
-- Saturn: {saturn['sign']} ({saturn['degree']:.2f}°)
-
-SPIRITUAL FOCUS: {spiritual_focus}
-
-Please provide:
-1. A warm, welcoming introduction
-2. Sun Sign Interpretation (core identity, ego, life purpose)
-3. Moon Sign Interpretation (emotional nature, inner world, needs)
-4. Rising Sign Interpretation (how others perceive you, first impression)
-5. Mercury Interpretation (communication style, thinking patterns)
-6. Venus Interpretation (love, values, relationships)
-7. Mars Interpretation (drive, passion, action)
-8. Jupiter Interpretation (growth, luck, expansion)
-9. Saturn Interpretation (lessons, boundaries, maturity)
-10. Integration & Shadow Work Prompts (practical exercises for self-discovery)
-11. Closing affirmation and encouragement
-
-Use a warm, mystical, trauma-informed tone. Balance cosmic wisdom with practical, actionable advice. Include journal prompts and reflection questions."""
-
+Write a warm, mystical, and empowering report that addresses their spiritual question.
+Include practical insights and actionable guidance."""
+    
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            max_tokens=3000,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=2000
         )
         content = response.choices[0].message.content
+        logger.info(f"Generated content for {name}")
+        return content
     except Exception as e:
-        logger.error(f"Error calling OpenAI: {e}")
-        raise
-
-    return content
+        logger.error(f"Error generating content: {e}")
+        return f"Unable to generate report at this time. Error: {str(e)}"
 
 def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_focus, content):
-    """Generate PDF report with logo watermark."""
+    """Generate PDF report with logo and content."""
     pdf = FPDF()
     pdf.add_page()
     
-    # Add logo as watermark (top right corner)
-    # Logo handling (optional - skip if file doesn't exist)
-try:
-    if os.path.exists("logos/NEW_LOGO.png"):
-        pdf.image("logos/NEW_LOGO.png", x=150, y=10, w=50)
-except Exception as e:
-    logger.warning(f"Logo not added: {e}")
+    try:
+        if os.path.exists("logos/NEW_LOGO.png"):
+            pdf.image("logos/NEW_LOGO.png", x=150, y=10, w=50)
+    except Exception as e:
+        logger.warning(f"Logo not added: {e}")
     
-    # Title and info
     pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, f"Deep Dive Birth Chart", ln=True, align="C")
+    pdf.cell(0, 10, f"{report_type}", ln=True, align="C")
     pdf.set_font("Helvetica", "", 10)
-    pdf.cell(0, 5, f"For: {name}", ln=True)
-    pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True)
+    pdf.cell(0, 5, f"For: {name}", ln=True, align="C")
+    pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True, align="C")
     pdf.ln(5)
     
-    # Content
     pdf.set_font("Helvetica", "", 9)
     content_clean = content.encode('latin-1', errors='replace').decode('latin-1')
     pdf.multi_cell(0, 5, content_clean)
     
     filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
     pdf.output(filename)
+    logger.info(f"PDF generated: {filename}")
     return filename
-
 
 
