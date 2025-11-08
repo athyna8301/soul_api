@@ -132,11 +132,31 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     pdf = FPDF()
     pdf.add_page()
     
-    try:
-        if os.path.exists("logos/NEW_LOGO.png"):
-            pdf.image("logos/NEW_LOGO.png", x=150, y=10, w=50)
-    except Exception as e:
-        logger.warning(f"Logo not added: {e}")
+    # Logo handling with better path detection
+    logo_paths = [
+        "logos/NEW_LOGO.png",
+        "logos/NEW LOGO.png",
+        "/opt/render/project/src/logos/NEW_LOGO.png",
+        "/opt/render/project/src/logos/NEW LOGO.png"
+    ]
+    
+    logo_added = False
+    for logo_path in logo_paths:
+        if os.path.exists(logo_path):
+            try:
+                pdf.image(logo_path, x=150, y=10, w=50)
+                logger.info(f"Logo added from: {logo_path}")
+                logo_added = True
+                break
+            except Exception as e:
+                logger.warning(f"Failed to add logo from {logo_path}: {e}")
+    
+    if not logo_added:
+        logger.warning(f"Logo not found. Checked paths: {logo_paths}")
+        logger.warning(f"Current directory: {os.getcwd()}")
+        logger.warning(f"Logos directory exists: {os.path.exists('logos')}")
+        if os.path.exists('logos'):
+            logger.warning(f"Logos directory contents: {os.listdir('logos')}")
     
     pdf.set_font("Helvetica", "B", 16)
     pdf.cell(0, 10, f"{report_type}", ln=True, align="C")
