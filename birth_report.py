@@ -1,206 +1,129 @@
-import os
-from fpdf import FPDF
-from datetime import datetime
 import logging
+from openai import OpenAI
+from fpdf import FPDF
 from astrology_calc import calculate_chart
+import os
+
+# Logo configuration (disabled for now)
+LOGO_PATH = None
+
 
 logger = logging.getLogger(__name__)
 
-def generate_birth_chart_report(name, birthdate, birthtime, birthplace, focus, email):
-    """Generate birth chart report"""
+def generate_report_content(name, birthdate, birthtime, birthplace, report_type, spiritual_focus):
+    """Generate report content using OpenAI and astrology data."""
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        logger.error("OPENAI_API_KEY not set")
+        raise ValueError("OPENAI_API_KEY not set")
+    
     try:
-        logger.info(f"Generating birth chart for {name}")
-        
-        # Calculate chart
-        chart_data = calculate_chart(birthdate, birthtime, birthplace)
-        logger.info(f"🔍 DEBUG: chart_data keys: {chart_data.keys()}")
-        logger.info(f"🔍 DEBUG: chart_data content: {chart_data}")
-        
-        # Generate content
-        content = generate_report_content(name, birthdate, birthtime, birthplace, chart_data, focus)
-        
-        # Create PDF
-        pdf_path = f"reports/{email.replace('@', '_at_')}_birth_chart.pdf"
-        os.makedirs("reports", exist_ok=True)
-        create_pdf(pdf_path, content, name, "Deep Dive Birth Chart")
-        
-        logger.info(f"Birth chart report generated: {pdf_path}")
-        return pdf_path
-        
+        client = OpenAI(api_key=api_key)
     except Exception as e:
-        logger.error(f"Error generating report: {e}")
+        logger.error(f"Error initializing OpenAI client: {e}")
         raise
 
-def generate_report_content(name, birthdate, birthtime, birthplace, chart_data, focus):
-    """Generate report content from chart data"""
-    
-    # Format coordinates and timezone
-    lat = chart_data['latitude']
-    lon = chart_data['longitude']
-    tz = chart_data['timezone']
-    
-    content = f"""
-DEEP DIVE BIRTH CHART REPORT
-For {name}
+    # Calculate astrology chart
+    try:
+        chart_data = calculate_chart(birthdate, birthtime, birthplace)
+    except Exception as e:
+        logger.error(f"Error calculating chart: {e}")
+        raise
 
-Birth Information:
-Date: {birthdate}
-Time: {birthtime}
-Place: {birthplace}
-Coordinates: {lat:.4f} N, {lon:.4f} W
-Timezone: {tz}
+    # Extract key chart data
+    sun = chart_data['planets']['Sun']
+    moon = chart_data['planets']['Moon']
+    mercury = chart_data['planets']['Mercury']
+    venus = chart_data['planets']['Venus']
+    mars = chart_data['planets']['Mars']
+    jupiter = chart_data['planets']['Jupiter']
+    saturn = chart_data['planets']['Saturn']
 
-Your Spiritual Focus: {focus}
+    # Get rising sign (calculate it directly)
+    asc_degree = chart_data['houses']['ascendant']
+    signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+             'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
+    rising_sign = signs[int(asc_degree / 30) % 12]
 
-===================================
-YOUR COSMIC BLUEPRINT
-===================================
+    # Create detailed prompt
+    prompt = f"""You are a professional astrologer with expertise in trauma-informed spiritual guidance, shadow work, and empowerment coaching.
 
-THE BIG THREE
+Generate a comprehensive Deep Dive Birth Chart interpretation for {name}.
 
-Sun Sign: {chart_data['sun']['sign']} at {chart_data['sun']['degree']:.2f} degrees
-Your core essence, life force, and authentic self.
+BIRTH DATA:
+- Born: {birthdate} at {birthtime} in {birthplace}
 
-Moon Sign: {chart_data['moon']['sign']} at {chart_data['moon']['degree']:.2f} degrees
-Your emotional nature, inner world, and subconscious patterns.
+ASTROLOGICAL PLACEMENTS:
+- Sun: {sun['sign']} ({sun['degree']:.2f}°)
+- Moon: {moon['sign']} ({moon['degree']:.2f}°)
+- Rising Sign: {rising_sign}
+- Mercury: {mercury['sign']} ({mercury['degree']:.2f}°)
+- Venus: {venus['sign']} ({venus['degree']:.2f}°)
+- Mars: {mars['sign']} ({mars['degree']:.2f}°)
+- Jupiter: {jupiter['sign']} ({jupiter['degree']:.2f}°)
+- Saturn: {saturn['sign']} ({saturn['degree']:.2f}°)
 
-Rising Sign (Ascendant): {chart_data['ascendant']['sign']} at {chart_data['ascendant']['degree']:.2f} degrees
-Your outer personality, how others see you, and your life path.
+SPIRITUAL FOCUS: {spiritual_focus}
 
-===================================
-PLANETARY POSITIONS
-===================================
+Please provide:
+1. A warm, welcoming introduction
+2. Sun Sign Interpretation (core identity, ego, life purpose)
+3. Moon Sign Interpretation (emotional nature, inner world, needs)
+4. Rising Sign Interpretation (how others perceive you, first impression)
+5. Mercury Interpretation (communication style, thinking patterns)
+6. Venus Interpretation (love, values, relationships)
+7. Mars Interpretation (drive, passion, action)
+8. Jupiter Interpretation (growth, luck, expansion)
+9. Saturn Interpretation (lessons, boundaries, maturity)
+10. Integration & Shadow Work Prompts (practical exercises for self-discovery)
+11. Closing affirmation and encouragement
 
-Mercury in {chart_data['mercury']['sign']} at {chart_data['mercury']['degree']:.2f} degrees
-Communication, thinking, and mental processes.
+Use a warm, mystical, trauma-informed tone. Balance cosmic wisdom with practical, actionable advice. Include journal prompts and reflection questions."""
 
-Venus in {chart_data['venus']['sign']} at {chart_data['venus']['degree']:.2f} degrees
-Love, relationships, values, and what brings you pleasure.
-
-Mars in {chart_data['mars']['sign']} at {chart_data['mars']['degree']:.2f} degrees
-Drive, passion, anger, and how you take action.
-
-Jupiter in {chart_data['jupiter']['sign']} at {chart_data['jupiter']['degree']:.2f} degrees
-Growth, expansion, luck, and abundance.
-
-Saturn in {chart_data['saturn']['sign']} at {chart_data['saturn']['degree']:.2f} degrees
-Discipline, responsibility, lessons, and karmic patterns.
-
-Uranus in {chart_data['uranus']['sign']} at {chart_data['uranus']['degree']:.2f} degrees
-Innovation, rebellion, sudden changes, and awakening.
-
-Neptune in {chart_data['neptune']['sign']} at {chart_data['neptune']['degree']:.2f} degrees
-Dreams, intuition, spirituality, and illusions.
-
-Pluto in {chart_data['pluto']['sign']} at {chart_data['pluto']['degree']:.2f} degrees
-Transformation, power, death/rebirth, and deep healing.
-
-===================================
-LUNAR NODES & CHIRON
-===================================
-
-North Node in {chart_data['north_node']['sign']} at {chart_data['north_node']['degree']:.2f} degrees
-Your soul's purpose and destiny in this lifetime.
-
-South Node in {chart_data['south_node']['sign']} at {chart_data['south_node']['degree']:.2f} degrees
-Past life gifts and patterns to release.
-
-Chiron in {chart_data['chiron']['sign']} at {chart_data['chiron']['degree']:.2f} degrees
-Your deepest wound and greatest healing gift.
-
-===================================
-HOUSE SYSTEM
-===================================
-"""
-
-    # Add houses
-    for i, house in enumerate(chart_data['houses'], 1):
-        content += f"\nHouse {i}: {house['sign']} at {house['degree']:.2f} degrees"
-    
-    content += """
-
-===================================
-MAJOR ASPECTS
-===================================
-"""
-
-    # Add aspects
-    if chart_data['aspects']:
-        for aspect in chart_data['aspects']:
-            content += f"\n{aspect['planet1']} {aspect['aspect']} {aspect['planet2']} (orb: {aspect['orb']:.2f} degrees)"
-    else:
-        content += "\nNo major aspects within orb."
-
-    content += """
-
-===================================
-INTERPRETATION & GUIDANCE
-===================================
-
-This chart reveals your unique cosmic blueprint. Each planetary placement, 
-house position, and aspect weaves together to tell the story of your soul's 
-journey in this lifetime.
-
-Your spiritual focus on "{focus}" is deeply connected to your chart patterns.
-Look to your North Node for your soul's calling, your Chiron for healing 
-opportunities, and your planetary placements for how to express your gifts.
-
-Remember: You are not defined by your chart - you are empowered by it.
-The stars show possibilities, but you create your destiny.
-
-Blessed be on your cosmic journey.
-
----
-Report generated by SacredSpace: Through The Cosmic Lens
-""".replace("{focus}", focus)
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            max_tokens=3000,
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        content = response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error calling OpenAI: {e}")
+        raise
 
     return content
 
-
-def create_pdf(path, content, name, report_type):
-    """Create PDF from content"""
-    
-    class PDF(FPDF):
-        def header(self):
-            self.set_font('Arial', 'B', 16)
-            self.cell(0, 10, f'{report_type}', 0, 1, 'C')
-            self.set_font('Arial', 'I', 10)
-            self.cell(0, 5, 'SacredSpace: Through The Cosmic Lens', 0, 1, 'C')
-            self.ln(5)
-        
-        def footer(self):
-            self.set_y(-15)
-            self.set_font('Arial', 'I', 8)
-            self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
-    
-    pdf = PDF()
+def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_focus, content):
+    """Generate PDF report with logo watermark."""
+    pdf = FPDF()
     pdf.add_page()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.set_font("Arial", size=10)
     
-    # Replace any remaining special characters
-    content = content.replace('°', ' degrees')
-    content = content.replace('♈', 'Aries')
-    content = content.replace('♉', 'Taurus')
-    content = content.replace('♊', 'Gemini')
-    content = content.replace('♋', 'Cancer')
-    content = content.replace('♌', 'Leo')
-    content = content.replace('♍', 'Virgo')
-    content = content.replace('♎', 'Libra')
-    content = content.replace('♏', 'Scorpio')
-    content = content.replace('♐', 'Sagittarius')
-    content = content.replace('♑', 'Capricorn')
-    content = content.replace('♒', 'Aquarius')
-    content = content.replace('♓', 'Pisces')
-    content = content.replace('"', '"')
-    content = content.replace('"', '"')
-    content = content.replace(''', "'")
-    content = content.replace(''', "'")
-    content = content.replace('—', '-')
-    content = content.replace('–', '-')
+    # Add logo as watermark (top right corner)
+    # Logo handling (optional - skip if file doesn't exist)
+try:
+    if os.path.exists("logos/NEW_LOGO.png"):
+        pdf.image("logos/NEW_LOGO.png", x=150, y=10, w=50)
+except Exception as e:
+    logger.warning(f"Logo not added: {e}")
     
-    # Add content
-    pdf.multi_cell(0, 5, content)
+    # Title and info
+    pdf.set_font("Helvetica", "B", 16)
+    pdf.cell(0, 10, f"Deep Dive Birth Chart", ln=True, align="C")
+    pdf.set_font("Helvetica", "", 10)
+    pdf.cell(0, 5, f"For: {name}", ln=True)
+    pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True)
+    pdf.ln(5)
     
-    # Save
-    pdf.output(path)
+    # Content
+    pdf.set_font("Helvetica", "", 9)
+    content_clean = content.encode('latin-1', errors='replace').decode('latin-1')
+    pdf.multi_cell(0, 5, content_clean)
+    
+    filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
+    pdf.output(filename)
+    return filename
+
+
+
