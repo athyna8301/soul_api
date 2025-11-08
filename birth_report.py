@@ -48,10 +48,7 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
 def generate_deep_dive(name, birthdate, birthtime, birthplace, spiritual_focus, chart_data, client):
     """Generate 20-25 page Deep Dive Birth Chart with REAL astrology data."""
     sections = []
-    
     planets = chart_data.get('planets', {})
-    houses = chart_data.get('houses', {})
-    
     sun_sign = planets.get('sun', {}).get('sign', 'Unknown')
     sun_degree = planets.get('sun', {}).get('degree', 0)
     moon_sign = planets.get('moon', {}).get('sign', 'Unknown')
@@ -68,36 +65,22 @@ def generate_deep_dive(name, birthdate, birthtime, birthplace, spiritual_focus, 
     chiron_sign = planets.get('chiron', {}).get('sign', 'Unknown')
     
     prompts = {
-        "overview": f"Write a compelling 2-3 paragraph COSMIC BLUEPRINT OVERVIEW for {name} born {birthdate} at {birthtime} in {birthplace}. Sun in {sun_sign} at {sun_degree:.1f}°, Moon in {moon_sign} at {moon_degree:.1f}°, Ascendant in {rising_sign} at {rising_degree:.1f}°. Focus on core cosmic identity, life theme, and spiritual mission SPECIFIC to these placements.",
-        
-        "sun": f"Write 2-3 pages on SUN SIGN DEEP DIVE for {name}. Sun in {sun_sign} at {sun_degree:.1f}°. Cover identity, ego expression, life purpose, creative power SPECIFIC to {sun_sign}. Include strengths, challenges, how she shines.",
-        
-        "moon": f"Write 2-3 pages on MOON SIGN & EMOTIONAL LANDSCAPE for {name}. Moon in {moon_sign} at {moon_degree:.1f}°. Explore emotional nature, inner world, needs, security patterns SPECIFIC to {moon_sign}. How does she process emotions?",
-        
-        "rising": f"Write 2-3 pages on RISING SIGN & LIFE PATH for {name}. Ascendant in {rising_sign} at {rising_degree:.1f}°. Describe appearance, mask, first impressions, life direction SPECIFIC to {rising_sign}. How does she present to the world?",
-        
-        "houses": f"Write 4-5 pages on PLANETARY PLACEMENTS for {name}. Mercury in {mercury_sign}, Venus in {venus_sign}, Mars in {mars_sign}, Jupiter in {jupiter_sign}, Saturn in {saturn_sign}. Cover career, relationships, finances, home, creativity. Be specific to these placements.",
-        
-        "aspects": f"Write 3-4 pages on MAJOR ASPECTS & COSMIC PATTERNS for {name}. Analyze relationships between: Sun in {sun_sign}, Moon in {moon_sign}, Mercury in {mercury_sign}, Venus in {venus_sign}, Mars in {mars_sign}. What inner tensions or harmonies exist?",
-        
-        "nodes": f"Write 2-3 pages on KARMIC LESSONS & SOUL MISSION for {name}. North Node in {north_node_sign}, South Node in {south_node_sign}, Chiron in {chiron_sign}. What is she here to learn? What past patterns must she release?",
-        
-        "strengths": f"Write 2-3 pages on COSMIC GIFTS & CHALLENGES for {name}. Based on Sun in {sun_sign}, Moon in {moon_sign}, Rising in {rising_sign}. Detail natural strengths, talents, challenges, growth edges. Be honest and empowering.",
-        
-        "relationships": f"Write 2-3 pages on LOVE & RELATIONSHIPS for {name}. Venus in {venus_sign}, Mars in {mars_sign}. How does she love? What attracts her? Relationship style SPECIFIC to these placements.",
-        
-        "career": f"Write 2-3 pages on CAREER & LIFE DIRECTION for {name}. Sun in {sun_sign}, Mercury in {mercury_sign}, Saturn in {saturn_sign}. Career calling, natural talents, ideal work environment. What brings fulfillment?",
-        
-        "integration": f"Write 2-3 pages on INTEGRATION & SHADOW WORK for {name}. Provide 5-7 journal prompts, rituals, practices specific to Sun in {sun_sign}, Moon in {moon_sign}. Spiritual focus: {spiritual_focus}. Make them actionable.",
+        "overview": f"Write 2-3 paragraphs COSMIC BLUEPRINT for {name}. Sun {sun_sign} {sun_degree:.0f}°, Moon {moon_sign} {moon_degree:.0f}°, Ascendant {rising_sign} {rising_degree:.0f}°. Core identity, life theme, spiritual mission.",
+        "sun": f"Write 2-3 pages SUN SIGN for {name}. Sun in {sun_sign} at {sun_degree:.0f}°. Identity, ego, life purpose, creative power SPECIFIC to {sun_sign}.",
+        "moon": f"Write 2-3 pages MOON SIGN for {name}. Moon in {moon_sign} at {moon_degree:.0f}°. Emotional nature, inner world, needs, security SPECIFIC to {moon_sign}.",
+        "rising": f"Write 2-3 pages RISING SIGN for {name}. Ascendant in {rising_sign} at {rising_degree:.0f}°. Appearance, mask, first impressions, life direction.",
+        "houses": f"Write 4-5 pages PLANETARY PLACEMENTS for {name}. Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}. Career, relationships, finances, home, creativity.",
+        "aspects": f"Write 3-4 pages MAJOR ASPECTS for {name}. Sun {sun_sign}, Moon {moon_sign}, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}. Inner tensions or harmonies.",
+        "nodes": f"Write 2-3 pages KARMIC LESSONS for {name}. North Node {north_node_sign}, South Node {south_node_sign}, Chiron {chiron_sign}. Soul lessons, past patterns, healing.",
+        "strengths": f"Write 2-3 pages COSMIC GIFTS for {name}. Sun {sun_sign}, Moon {moon_sign}, Rising {rising_sign}. Strengths, talents, challenges, growth edges.",
+        "relationships": f"Write 2-3 pages LOVE PATTERNS for {name}. Venus {venus_sign}, Mars {mars_sign}. Love language, attraction, relationship style.",
+        "career": f"Write 2-3 pages CAREER for {name}. Sun {sun_sign}, Mercury {mercury_sign}, Saturn {saturn_sign}. Career calling, talents, ideal work.",
+        "integration": f"Write 2-3 pages SHADOW WORK for {name}. Sun {sun_sign}, Moon {moon_sign}. 5-7 journal prompts, rituals, practices. Focus: {spiritual_focus}.",
     }
     
     for section_name, prompt in prompts.items():
         try:
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=3000
-            )
+            response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=3000)
             sections.append(response.choices[0].message.content)
             logger.info(f"Generated {section_name} for {name}")
         except Exception as e:
@@ -109,31 +92,24 @@ def generate_deep_dive(name, birthdate, birthtime, birthplace, spiritual_focus, 
 def generate_love_blueprint(name, birthdate, birthtime, birthplace, spiritual_focus, chart_data, client):
     """Generate 10-12 page Love Blueprint."""
     sections = []
-    
     planets = chart_data.get('planets', {})
     venus_sign = planets.get('venus', {}).get('sign', 'Unknown')
-    venus_degree = planets.get('venus', {}).get('degree', 0)
     mars_sign = planets.get('mars', {}).get('sign', 'Unknown')
-    mars_degree = planets.get('mars', {}).get('degree', 0)
     moon_sign = planets.get('moon', {}).get('sign', 'Unknown')
     
     prompts = {
-        "venus": f"Write 2 pages on VENUS SIGN DEEP DIVE for {name}. Venus in {venus_sign} at {venus_degree:.1f}°. Love language, attraction style, values SPECIFIC to {venus_sign}.",
-        "mars": f"Write 1.5 pages on MARS PLACEMENT for {name}. Mars in {mars_sign} at {mars_degree:.1f}°. Desire, passion, sexuality, pursuit style SPECIFIC to {mars_sign}.",
-        "7th_house": f"Write 2 pages on 7TH HOUSE & PARTNERSHIP for {name}. Venus in {venus_sign}, Mars in {mars_sign}. Partnership patterns and ideal partner blueprint.",
-        "patterns": f"Write 1.5 pages on RELATIONSHIP PATTERNS for {name}. Moon in {moon_sign}, Venus in {venus_sign}. Recurring themes, past cycles, healing opportunities.",
-        "blocks": f"Write 1.5 pages on LOVE BLOCKS & HEALING for {name}. Venus in {venus_sign}, Mars in {mars_sign}. Fears, blocks, growth edges. Be compassionate.",
-        "sacred_union": f"Write 1 page on SACRED UNION BLUEPRINT for {name}. Vision of ideal partnership based on Venus in {venus_sign}, Mars in {mars_sign}, Moon in {moon_sign}.",
-        "rituals": f"Write 1 page on LOVE ACTIVATION RITUALS for {name}. 3-4 rituals to magnetize love, specific to Venus in {venus_sign}. Spiritual focus: {spiritual_focus}.",
+        "venus": f"Write 2 pages VENUS for {name}. Venus in {venus_sign}. Love language, attraction, values.",
+        "mars": f"Write 1.5 pages MARS for {name}. Mars in {mars_sign}. Desire, passion, sexuality.",
+        "7th_house": f"Write 2 pages PARTNERSHIP for {name}. Venus {venus_sign}, Mars {mars_sign}. Partnership patterns, ideal partner.",
+        "patterns": f"Write 1.5 pages RELATIONSHIP PATTERNS for {name}. Moon {moon_sign}, Venus {venus_sign}. Recurring themes, cycles.",
+        "blocks": f"Write 1.5 pages LOVE BLOCKS for {name}. Venus {venus_sign}, Mars {mars_sign}. Fears, blocks, growth edges.",
+        "sacred_union": f"Write 1 page IDEAL PARTNERSHIP for {name}. Venus {venus_sign}, Mars {mars_sign}, Moon {moon_sign}. Vision.",
+        "rituals": f"Write 1 page LOVE RITUALS for {name}. 3-4 rituals to magnetize love. Venus {venus_sign}. Focus: {spiritual_focus}.",
     }
     
     for section_name, prompt in prompts.items():
         try:
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=2500
-            )
+            response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=2500)
             sections.append(response.choices[0].message.content)
             logger.info(f"Generated {section_name} for {name}")
         except Exception as e:
@@ -150,22 +126,10 @@ def generate_career_code(name, birthdate, birthtime, birthplace, spiritual_focus
     saturn_sign = planets.get('saturn', {}).get('sign', 'Unknown')
     jupiter_sign = planets.get('jupiter', {}).get('sign', 'Unknown')
     
-    prompt = f"""Create comprehensive 10-12 page CAREER CODE for {name} born {birthdate} at {birthtime} in {birthplace}.
-
-Chart shows: Sun in {sun_sign}, Mercury in {mercury_sign}, Saturn in {saturn_sign}, Jupiter in {jupiter_sign}
-
-Include: 10th House/Midheaven, Sun in {sun_sign} career context, Mercury in {mercury_sign} skills, natural talents, challenges, ideal work environment, abundance activation, 5-year vision.
-
-Spiritual focus: {spiritual_focus}
-
-Be specific and actionable."""
+    prompt = f"Create 10-12 page CAREER CODE for {name}. Sun {sun_sign}, Mercury {mercury_sign}, Saturn {saturn_sign}, Jupiter {jupiter_sign}. Career path, talents, challenges, ideal work, abundance. Focus: {spiritual_focus}"
     
     try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=3500
-        )
+        response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=3500)
         return response.choices[0].message.content
     except Exception as e:
         logger.error(f"Error generating career code: {e}")
@@ -179,22 +143,10 @@ def generate_life_purpose(name, birthdate, birthtime, birthplace, spiritual_focu
     south_node = planets.get('south_node', {}).get('sign', 'Unknown')
     chiron_sign = planets.get('chiron', {}).get('sign', 'Unknown')
     
-    prompt = f"""Create profound 10-12 page LIFE PURPOSE for {name} born {birthdate} at {birthtime} in {birthplace}.
-
-Chart reveals: Sun in {sun_sign}, North Node in {north_node}, South Node in {south_node}, Chiron in {chiron_sign}
-
-Include: Soul's calling, life mission blueprint, karmic contracts, spiritual gifts, shadow work, past life themes, purpose activation rituals, integration steps.
-
-Spiritual focus: {spiritual_focus}
-
-Be deeply spiritual and transformative."""
+    prompt = f"Create 10-12 page LIFE PURPOSE for {name}. Sun {sun_sign}, North Node {north_node}, South Node {south_node}, Chiron {chiron_sign}. Soul calling, mission, karmic contracts, gifts, shadow work, past lives, rituals. Focus: {spiritual_focus}"
     
     try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=3500
-        )
+        response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=3500)
         return response.choices[0].message.content
     except Exception as e:
         logger.error(f"Error generating life purpose: {e}")
@@ -202,15 +154,47 @@ Be deeply spiritual and transformative."""
 
 def generate_30day_outlook(name, birthdate, birthtime, birthplace, spiritual_focus, chart_data, client):
     """Generate 10-12 page 30 Day Outlook."""
-    prompt = f"Create detailed 10-12 page 30 DAY OUTLOOK for {name} born {birthdate}. Include: Current transits, week-by-week forecast (4 weeks), key themes, challenges/opportunities, ritual recommendations, daily affirmations. Spiritual focus: {spiritual_focus}"
+    prompt = f"Create 10-12 page 30 DAY OUTLOOK for {name} born {birthdate}. Transits, week-by-week forecast, key themes, challenges, opportunities, rituals, affirmations. Focus: {spiritual_focus}"
     
     try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=3500
-        )
+        response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=3500)
         return response.choices[0].message.content
     except Exception as e:
         logger.error(f"Error generating 30 day outlook: {e}")
-        return
+        return f"Unable to generate report. Error: {str(e)}"
+
+def generate_cosmic_calendar(name, birthdate, birthtime, birthplace, spiritual_focus, chart_data, client):
+    """Generate 8-10 page Cosmic Calendar."""
+    prompt = f"Create 8-10 page COSMIC CALENDAR for {name}. Monthly overview, New Moon intentions, Full Moon release, weekly cosmic weather, daily rituals, affirmations. Focus: {spiritual_focus}"
+    
+    try:
+        response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=3500)
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating cosmic calendar: {e}")
+        return f"Unable to generate calendar. Error: {str(e)}"
+
+def generate_human_design(name, birthdate, birthtime, birthplace, spiritual_focus, chart_data, client):
+    """Generate 50+ page Human Design Reading."""
+    prompt = f"Create 50+ page HUMAN DESIGN for {name} born {birthdate}. Type, Strategy, Authority, Profile, Channels, Gates, Lines, career, relationships, shadow work, 90-day plan. Focus: {spiritual_focus}"
+    
+    try:
+        response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=4000)
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating human design: {e}")
+        return f"Unable to generate report. Error: {str(e)}"
+
+def generate_starseed_lineage(name, birthdate, birthtime, birthplace, spiritual_focus, chart_data, client):
+    """Generate 12-15 page Starseed Lineage."""
+    prompt = f"Create 12-15 page STARSEED LINEAGE for {name}. Origins, galactic heritage, mission, planetary influences, gifts, Earth integration, cosmic contracts, rituals, star family connection. Focus: {spiritual_focus}"
+    
+    try:
+        response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=3500)
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating starseed lineage: {e}")
+        return f"Unable to generate report. Error: {str(e)}"
+
+def generate_astrocartography(name, birthdate, birthtime, birthplace, spiritual_focus, chart_data, client):
+    """Generate 
