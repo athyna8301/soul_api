@@ -22,58 +22,163 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
         chart_data = {}
     
     planets = chart_data.get('planets', {})
-    sun_sign = planets.get('sun', {}).get('sign', 'Unknown')
-    sun_deg = planets.get('sun', {}).get('degree', 0)
-    moon_sign = planets.get('moon', {}).get('sign', 'Unknown')
-    moon_deg = planets.get('moon', {}).get('degree', 0)
-    rising_sign = planets.get('rising', {}).get('sign', 'Unknown')
-    rising_deg = planets.get('rising', {}).get('degree', 0)
-    mercury_sign = planets.get('mercury', {}).get('sign', 'Unknown')
-    venus_sign = planets.get('venus', {}).get('sign', 'Unknown')
-    mars_sign = planets.get('mars', {}).get('sign', 'Unknown')
-    jupiter_sign = planets.get('jupiter', {}).get('sign', 'Unknown')
-    saturn_sign = planets.get('saturn', {}).get('sign', 'Unknown')
-    north_node = planets.get('north_node', {}).get('sign', 'Unknown')
-    south_node = planets.get('south_node', {}).get('sign', 'Unknown')
-    chiron_sign = planets.get('chiron', {}).get('sign', 'Unknown')
     
-    chart_summary = f"Sun {sun_sign} {sun_deg:.0f}°, Moon {moon_sign} {moon_deg:.0f}°, Rising {rising_sign} {rising_deg:.0f}°, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}, North Node {north_node}, South Node {south_node}, Chiron {chiron_sign}"
+    sun_sign = planets.get('Sun', {}).get('sign', 'Unknown')
+    sun_deg = planets.get('Sun', {}).get('degree', 0)
+    moon_sign = planets.get('Moon', {}).get('sign', 'Unknown')
+    moon_deg = planets.get('Moon', {}).get('degree', 0)
+    mercury_sign = planets.get('Mercury', {}).get('sign', 'Unknown')
+    mercury_deg = planets.get('Mercury', {}).get('degree', 0)
+    venus_sign = planets.get('Venus', {}).get('sign', 'Unknown')
+    venus_deg = planets.get('Venus', {}).get('degree', 0)
+    mars_sign = planets.get('Mars', {}).get('sign', 'Unknown')
+    mars_deg = planets.get('Mars', {}).get('degree', 0)
+    jupiter_sign = planets.get('Jupiter', {}).get('sign', 'Unknown')
+    jupiter_deg = planets.get('Jupiter', {}).get('degree', 0)
+    saturn_sign = planets.get('Saturn', {}).get('sign', 'Unknown')
+    saturn_deg = planets.get('Saturn', {}).get('degree', 0)
+    north_node_sign = planets.get('North Node', {}).get('sign', 'Unknown')
+    north_node_deg = planets.get('North Node', {}).get('degree', 0)
+    chiron_sign = planets.get('Chiron', {}).get('sign', 'Unknown')
+    chiron_deg = planets.get('Chiron', {}).get('degree', 0)
+    
+    houses = chart_data.get('houses', {})
+    ascendant_deg = houses.get('ascendant', 0)
+    mc_deg = houses.get('mc', 0)
+    
+    rising_sign = get_sign_from_degree(ascendant_deg)
+    mc_sign = get_sign_from_degree(mc_deg)
+    
+    logger.info(f"Extracted: Sun {sun_sign} {sun_deg:.1f}°, Moon {moon_sign} {moon_deg:.1f}°, Rising {rising_sign}")
     
     if report_type == "Deep Dive Birth Chart":
-        prompt = f"Create comprehensive 20-25 page DEEP DIVE BIRTH CHART for {name} born {birthdate} at {birthtime} in {birthplace}. ACTUAL CHART DATA: {chart_summary}. Include: Cosmic blueprint overview, Sun sign deep dive (identity, ego, purpose), Moon sign (emotions, needs, security), Rising sign (appearance, life path), planetary placements in houses (career, relationships, finances, home, creativity), major aspects and patterns, karmic lessons (North/South Node, Chiron), cosmic gifts and challenges, love patterns, career direction, shadow work with 5-7 journal prompts and rituals. Spiritual focus: {spiritual_focus}. BE SPECIFIC TO THESE ACTUAL PLACEMENTS."
+        prompt = f"""Create a comprehensive 20-25 page DEEP DIVE BIRTH CHART for {name}.
+
+BIRTH DATA:
+- Born: {birthdate} at {birthtime} in {birthplace}
+- Spiritual Focus: {spiritual_focus}
+
+ACTUAL PLANETARY PLACEMENTS (DO NOT IGNORE - USE THESE EXACT PLACEMENTS):
+- Sun in {sun_sign} at {sun_deg:.1f}°
+- Moon in {moon_sign} at {moon_deg:.1f}°
+- Rising (Ascendant) in {rising_sign} at {ascendant_deg:.1f}°
+- Mercury in {mercury_sign} at {mercury_deg:.1f}°
+- Venus in {venus_sign} at {venus_deg:.1f}°
+- Mars in {mars_sign} at {mars_deg:.1f}°
+- Jupiter in {jupiter_sign} at {jupiter_deg:.1f}°
+- Saturn in {saturn_sign} at {saturn_deg:.1f}°
+- North Node in {north_node_sign} at {north_node_deg:.1f}°
+- Chiron in {chiron_sign} at {chiron_deg:.1f}°
+- Midheaven in {mc_sign} at {mc_deg:.1f}°
+
+REQUIRED SECTIONS (BE SPECIFIC TO THESE EXACT PLACEMENTS):
+1. COSMIC BLUEPRINT OVERVIEW (2-3 pages): Core identity, life theme, spiritual mission based on Sun {sun_sign}, Moon {moon_sign}, Rising {rising_sign}
+2. SUN SIGN DEEP DIVE (2-3 pages): {sun_sign} at {sun_deg:.1f}° - identity, ego expression, life purpose, creative power
+3. MOON SIGN (2-3 pages): {moon_sign} at {moon_deg:.1f}° - emotional nature, inner world, security patterns
+4. RISING SIGN (2 pages): {rising_sign} at {ascendant_deg:.1f}° - appearance, mask, first impressions, life direction
+5. PLANETARY PLACEMENTS (4-5 pages): Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign} - career, relationships, finances, home, creativity
+6. MAJOR ASPECTS (3-4 pages): Analyze conjunctions, trines, squares, oppositions between these planets
+7. KARMIC LESSONS (2-3 pages): North Node {north_node_sign}, Chiron {chiron_sign} - soul lessons, past patterns, healing
+8. COSMIC GIFTS & CHALLENGES (2-3 pages): Strengths, talents, challenges, growth edges
+9. LOVE PATTERNS (2-3 pages): Venus {venus_sign}, Mars {mars_sign} - love language, attraction, relationship style
+10. CAREER & LIFE DIRECTION (2-3 pages): Sun {sun_sign}, Mercury {mercury_sign}, Saturn {saturn_sign}, Midheaven {mc_sign} - career calling, talents, ideal work
+11. SHADOW WORK & INTEGRATION (2-3 pages): 5-7 journal prompts, rituals, practices specific to these placements
+
+CRITICAL: Do NOT say you need more information. You have all the data. Use these exact placements to create a personalized, detailed, specific analysis."""
+    
     elif report_type == "Love Blueprint":
-        prompt = f"Create 10-12 page LOVE BLUEPRINT for {name}. ACTUAL CHART: {chart_summary}. Include: Venus sign deep dive (love language, attraction, values), Mars placement (desire, passion, sexuality), 7th house partnership patterns, relationship patterns, love blocks and healing, sacred union blueprint, 3-4 love activation rituals. Spiritual focus: {spiritual_focus}. BE SPECIFIC TO VENUS IN {venus_sign} AND MARS IN {mars_sign}."
+        prompt = f"""Create a 10-12 page LOVE BLUEPRINT for {name}.
+
+ACTUAL CHART DATA:
+- Venus in {venus_sign} at {venus_deg:.1f}°
+- Mars in {mars_sign} at {mars_deg:.1f}°
+- Moon in {moon_sign} at {moon_deg:.1f}°
+- Spiritual Focus: {spiritual_focus}
+
+SECTIONS:
+1. VENUS SIGN (2 pages): {venus_sign} at {venus_deg:.1f}° - love language, attraction, values, what you need in relationships
+2. MARS PLACEMENT (1.5 pages): {mars_sign} at {mars_deg:.1f}° - desire, passion, sexuality, how you pursue
+3. PARTNERSHIP PATTERNS (2 pages): Moon {moon_sign}, Venus {venus_sign}, Mars {mars_sign} - your relationship style
+4. RELATIONSHIP BLOCKS & HEALING (1.5 pages): Fears, blocks, growth edges
+5. SACRED UNION BLUEPRINT (1 page): Vision of ideal partnership
+6. LOVE ACTIVATION RITUALS (1 page): 3-4 specific rituals for magnetizing love
+7. INTEGRATION (1.5 pages): Journal prompts and practices
+
+Use ONLY these exact placements. Do NOT ask for more data."""
+    
     elif report_type == "Career Code":
-        prompt = f"Create 10-12 page CAREER CODE for {name}. ACTUAL CHART: {chart_summary}. Include: 10th house/Midheaven analysis, Sun in {sun_sign} career context, Mercury in {mercury_sign} skills, Saturn in {saturn_sign} discipline, Jupiter in {jupiter_sign} expansion, natural talents, challenges, ideal work environment, abundance activation, 5-year vision. Spiritual focus: {spiritual_focus}."
+        prompt = f"""Create 10-12 page CAREER CODE for {name}.
+
+ACTUAL CHART DATA:
+- Sun in {sun_sign} at {sun_deg:.1f}°
+- Mercury in {mercury_sign} at {mercury_deg:.1f}°
+- Saturn in {saturn_sign} at {saturn_deg:.1f}°
+- Jupiter in {jupiter_sign} at {jupiter_deg:.1f}°
+- Midheaven in {mc_sign} at {mc_deg:.1f}°
+- Spiritual Focus: {spiritual_focus}
+
+SECTIONS:
+1. CAREER CALLING (3 pages): Based on Sun {sun_sign}, Midheaven {mc_sign}
+2. NATURAL TALENTS (2 pages): Mercury {mercury_sign}, Jupiter {jupiter_sign}
+3. DISCIPLINE & STRUCTURE (2 pages): Saturn {saturn_sign} - how you build
+4. IDEAL WORK ENVIRONMENT (1.5 pages): What brings fulfillment
+5. CHALLENGES & GROWTH (1.5 pages): Saturn {saturn_sign} lessons
+6. ABUNDANCE ACTIVATION (1 page): Rituals and practices
+7. 5-YEAR VISION (1.5 pages): Your career evolution
+
+Use these exact placements. Be specific."""
+    
     elif report_type == "Life Purpose":
-        prompt = f"Create 10-12 page LIFE PURPOSE for {name}. ACTUAL CHART: {chart_summary}. Include: Soul's calling (North Node in {north_node}), life mission blueprint, karmic contracts (South Node in {south_node}), spiritual gifts (Sun in {sun_sign}), shadow work, past life themes, Chiron in {chiron_sign} healing, purpose activation rituals, integration steps. Spiritual focus: {spiritual_focus}."
-    elif report_type == "30 Day Outlook":
-        prompt = f"Create 10-12 page 30 DAY OUTLOOK for {name} born {birthdate}. CHART: {chart_summary}. Include: Current transits overview, week-by-week forecast (4 weeks), key themes, challenges/opportunities, ritual recommendations, daily affirmations. Spiritual focus: {spiritual_focus}."
-    elif report_type == "Cosmic Calendar":
-        prompt = f"Create 8-10 page COSMIC CALENDAR for {name}. CHART: {chart_summary}. Include: Monthly overview, New Moon intentions, Full Moon release, weekly cosmic weather, daily alerts/rituals, affirmations, recommended practices. Spiritual focus: {spiritual_focus}."
-    elif report_type == "Human Design":
-        prompt = f"Create 50+ page HUMAN DESIGN for {name} born {birthdate} at {birthtime} in {birthplace}. Include: HD basics, Type & Strategy (5 pages), Authority (5 pages), Profile (5 pages), Channels (8 pages), Gates (10 pages), Lines (8 pages), career/relationship guidance, shadow work, 90-day experiment plan. Spiritual focus: {spiritual_focus}."
-    elif report_type == "Starseed Lineage":
-        prompt = f"Create 12-15 page STARSEED LINEAGE for {name}. CHART: {chart_summary}. Include: Starseed origins, galactic heritage/mission, planetary influences, starseed gifts, Earth integration challenges, cosmic contracts, activation rituals, connecting with star family. Spiritual focus: {spiritual_focus}."
-    elif report_type == "Astrocartography":
-        prompt = f"Create 20-40 page ASTROCARTOGRAPHY for {name} born {birthdate} at {birthtime} in {birthplace}. CHART: {chart_summary}. Include: Basics, personal power lines (Sun/Moon/Venus/Mars/Jupiter/Saturn), top 5 recommended locations with coordinates, locations to avoid, relocation impact, timing, integration rituals, 30-day relocation plan. Spiritual focus: {spiritual_focus}."
-    elif report_type == "Shadow Work Workbook":
-        prompt = f"Create 80+ page SHADOW WORK WORKBOOK for {name}. CHART: {chart_summary}. Include: Trauma-informed intro, shadow archetypes, 12 weeks of work (awareness, root causes, integration, transmutation, embodiment, mastery) with 15 journal prompts per 2-week block, weekly rituals, affirmations, resources. Spiritual focus: {spiritual_focus}."
+        prompt = f"""Create 10-12 page LIFE PURPOSE for {name}.
+
+ACTUAL CHART DATA:
+- Sun in {sun_sign} at {sun_deg:.1f}°
+- North Node in {north_node_sign} at {north_node_deg:.1f}°
+- Chiron in {chiron_sign} at {chiron_deg:.1f}°
+- Spiritual Focus: {spiritual_focus}
+
+SECTIONS:
+1. SOUL'S CALLING (3 pages): North Node {north_node_sign} - your destiny
+2. LIFE MISSION (2 pages): Sun {sun_sign} - your core purpose
+3. CHIRON HEALING (2 pages): {chiron_sign} at {chiron_deg:.1f}° - your wounded healer gift
+4. PAST LIFE PATTERNS (2 pages): What you're here to transcend
+5. PURPOSE ACTIVATION RITUALS (1.5 pages): Practices to embody your mission
+6. SHADOW WORK (1.5 pages): Journal prompts and integration
+7. YOUR COSMIC ROLE (1 page): How you serve the world
+
+Use these exact placements. Do NOT ask for more data."""
+    
     else:
-        prompt = f"Create personalized {report_type} for {name} born {birthdate} at {birthtime} in {birthplace}. CHART: {chart_summary}. Spiritual focus: {spiritual_focus}. Write warm, mystical, empowering report."
+        prompt = f"""Create personalized {report_type} for {name} born {birthdate} at {birthtime} in {birthplace}.
+
+CHART DATA: Sun {sun_sign} {sun_deg:.1f}°, Moon {moon_sign} {moon_deg:.1f}°, Rising {rising_sign}, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}, North Node {north_node_sign}, Chiron {chiron_sign}.
+
+Spiritual focus: {spiritual_focus}
+
+Write warm, mystical, empowering report using THESE EXACT PLACEMENTS."""
     
     try:
-        response = client.chat.completions.create(model="gpt-4", messages=[{"role": "user", "content": prompt}], max_tokens=4000)
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=4000
+        )
         return response.choices[0].message.content
     except Exception as e:
         logger.error(f"Error generating {report_type}: {e}")
         return f"Unable to generate report. Error: {str(e)}"
 
+def get_sign_from_degree(degree):
+    """Convert zodiac degree to sign."""
+    signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
+    sign_index = int(degree / 30)
+    return signs[sign_index % 12]
+
 def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_focus, content):
     pdf = FPDF()
     pdf.add_page()
     
-    logo_paths = ["logos/NEW_LOGO.png", "logos/NEW LOGO.png", "/opt/render/project/src/logos/NEW_LOGO.png", "/opt/render/project/src/logos/NEW LOGO.png"]
+    logo_paths = ["logos/NEW_LOGO.png", "logos/NEW LOGO.png", "/opt/render/project/src/logos/NEW_LOGO.png"]
     
     for logo_path in logo_paths:
         if os.path.exists(logo_path):
