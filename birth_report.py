@@ -52,181 +52,147 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
     logger.info(f"Extracted: Sun {sun_sign} {sun_deg:.1f}°, Moon {moon_sign} {moon_deg:.1f}°, Rising {rising_sign}")
     
     if report_type == "Deep Dive Birth Chart":
-        prompt = f"""Write a comprehensive 15-20 page spiritual and archetypal birth chart profile for {name}, based on the following cosmic data points and archetypal symbolism.
+        prompt = f"""Write a comprehensive 15-20 page spiritual and archetypal birth chart profile for {name}.
 
 BIRTH DATA:
 Name: {name}
 Born: {birthdate} at {birthtime} in {birthplace}
 Spiritual Focus: {spiritual_focus}
 
-COSMIC ARCHETYPAL DATA (use these as symbolic reference points for character analysis):
-- Primary Archetype (Sun): {sun_sign} at {sun_deg:.2f}°
-- Emotional Archetype (Moon): {moon_sign} at {moon_deg:.2f}°
-- Persona/Mask (Rising): {rising_sign} at {ascendant_deg:.2f}°
-- Communication Style (Mercury): {mercury_sign} at {mercury_deg:.2f}°
-- Love/Values (Venus): {venus_sign} at {venus_deg:.2f}°
-- Action/Drive (Mars): {mars_sign} at {mars_deg:.2f}°
-- Growth/Expansion (Jupiter): {jupiter_sign} at {jupiter_deg:.2f}°
-- Discipline/Limits (Saturn): {saturn_sign} at {saturn_deg:.2f}°
-- Soul Growth Direction (North Node): {north_node_sign} at {north_node_deg:.2f}°
-- Wounded Healer (Chiron): {chiron_sign} at {chiron_deg:.2f}°
-- Life Direction (Midheaven): {mc_sign} at {mc_deg:.2f}°
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Rising: {rising_sign} at {ascendant_deg:.2f}°
+Mercury: {mercury_sign} at {mercury_deg:.2f}°
+Venus: {venus_sign} at {venus_deg:.2f}°
+Mars: {mars_sign} at {mars_deg:.2f}°
+Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
+Saturn: {saturn_sign} at {saturn_deg:.2f}°
+North Node: {north_node_sign} at {north_node_deg:.2f}°
+Chiron: {chiron_sign} at {chiron_deg:.2f}°
+Midheaven: {mc_sign} at {mc_deg:.2f}°
 
-WRITE THESE SECTIONS (aim for 15-20 pages total, with detailed exploration):
-
-1. COSMIC BLUEPRINT OVERVIEW (2-3 pages): Synthesize the primary, emotional, and persona archetypes into a cohesive life narrative. What is {name}'s core identity and life theme?
-
-2. PRIMARY ARCHETYPE DEEP DIVE (2-3 pages): {sun_sign} at {sun_deg:.2f}°. How does this archetype express through identity, purpose, and creative power?
-
-3. EMOTIONAL LANDSCAPE (2-3 pages): {moon_sign} at {moon_deg:.2f}°. What is {name}'s inner emotional world? How does she process feelings and seek security?
-
-4. PERSONA & FIRST IMPRESSIONS (1-2 pages): {rising_sign} at {ascendant_deg:.2f}°. How does {name} appear to others? What mask does she wear?
-
-5. COMMUNICATION & INTELLECT (1-2 pages): {mercury_sign} at {mercury_deg:.2f}°. How does {name} think, communicate, and process information?
-
-6. LOVE & RELATIONSHIPS (2-3 pages): {venus_sign} at {venus_deg:.2f}° and {mars_sign} at {mars_deg:.2f}°. What is {name}'s love language? How does she pursue and attract?
-
-7. EXPANSION & GROWTH (1-2 pages): {jupiter_sign} at {jupiter_deg:.2f}°. Where does {name} naturally expand? What brings joy and abundance?
-
-8. DISCIPLINE & STRUCTURE (1-2 pages): {saturn_sign} at {saturn_deg:.2f}°. How does {name} build? What are her limitations and where does she need discipline?
-
-9. SOUL'S DIRECTION (2-3 pages): {north_node_sign} at {north_node_deg:.2f}°. What is {name}'s soul growth direction? What is she learning in this lifetime?
-
-10. WOUNDED HEALER (2-3 pages): {chiron_sign} at {chiron_deg:.2f}°. What is {name}'s deepest wound? How can she transform it into her greatest gift?
-
-11. LIFE PURPOSE & VOCATION (1-2 pages): {mc_sign} at {mc_deg:.2f}°. What is {name}'s calling? How can she best serve the world?
-
-12. INTEGRATION & SHADOW WORK (2-3 pages): Provide 7-10 journal prompts, rituals, and practices tailored to {name}'s archetypal profile. Include specific affirmations and ceremonies.
-
-TONE: Warm, mystical, empowering, trauma-informed. Use archetypal and psychological language. Be specific, detailed, and comprehensive."""
+Write 12 detailed sections (15-20 pages total). Be comprehensive, specific, and deeply insightful."""
     
     elif report_type == "Love Blueprint":
-        prompt = f"""Write a detailed 12-15 page spiritual and archetypal love profile for {name}.
-
-COSMIC LOVE DATA:
-- Love Archetype (Venus): {venus_sign} at {venus_deg:.2f}°
-- Desire Archetype (Mars): {mars_sign} at {mars_deg:.2f}°
-- Emotional Archetype (Moon): {moon_sign} at {moon_deg:.2f}°
-- Core Self (Sun): {sun_sign} at {sun_deg:.2f}°
-- Spiritual Focus: {spiritual_focus}
-
-WRITE THESE SECTIONS (aim for 12-15 pages total):
-
-1. LOVE ARCHETYPE (2-3 pages): {venus_sign} at {venus_deg:.2f}°. What is {name}'s love language? How does she express affection and values in relationships? What does she seek in a partner?
-
-2. DESIRE & PASSION (2-3 pages): {mars_sign} at {mars_deg:.2f}°. How does {name} pursue? What ignites her passion? Her sexuality and assertiveness in love?
-
-3. EMOTIONAL INTIMACY (2-3 pages): {moon_sign} at {moon_deg:.2f}°. What does {name} need to feel emotionally safe and bonded? Her attachment style and emotional needs?
-
-4. CORE IDENTITY IN LOVE (1-2 pages): {sun_sign} at {sun_deg:.2f}°. How does her core self show up in relationships? Her authentic expression of love?
-
-5. PARTNERSHIP PATTERNS (2-3 pages): What recurring themes appear in {name}'s relationships? What patterns need healing? Cycles and dynamics?
-
-6. LOVE BLOCKS & HEALING (2-3 pages): What fears or wounds affect {name}'s ability to love? How can she heal? Specific blocks and their origins?
-
-7. SACRED UNION VISION (1-2 pages): What does {name}'s ideal partnership look like? Her vision of sacred love?
-
-8. LOVE ACTIVATION RITUALS (1-2 pages): 4-5 specific rituals to magnetize love, deepen connection, and embody healthy partnership.
-
-9. INTEGRATION & PRACTICES (1-2 pages): Journal prompts, affirmations, and daily practices for embodying healthy, sacred love.
-
-TONE: Warm, mystical, empowering, trauma-informed. Detailed and specific to her chart."""
-    
-    elif report_type == "Career Code":
-        prompt = f"""Write a detailed 12-15 page spiritual and archetypal career profile for {name}.
-
-COSMIC CAREER DATA:
-- Core Self (Sun): {sun_sign} at {sun_deg:.2f}°
-- Communication (Mercury): {mercury_sign} at {mercury_deg:.2f}°
-- Discipline (Saturn): {saturn_sign} at {saturn_deg:.2f}°
-- Expansion (Jupiter): {jupiter_sign} at {jupiter_deg:.2f}°
-- Life Direction (Midheaven): {mc_sign} at {mc_deg:.2f}°
-- Spiritual Focus: {spiritual_focus}
-
-WRITE THESE SECTIONS (aim for 12-15 pages total):
-
-1. CAREER CALLING (3-4 pages): {sun_sign} and {mc_sign}. What is {name}'s true calling? Her soul's work and life vocation?
-
-2. NATURAL TALENTS & GIFTS (2-3 pages): {mercury_sign} and {jupiter_sign}. What are {name}'s innate abilities, strengths, and natural talents?
-
-3. DISCIPLINE & BUILDING MASTERY (2-3 pages): {saturn_sign}. How does {name} build sustainable success? Her approach to discipline, persistence, and long-term achievement?
-
-4. EXPANSION & ABUNDANCE (2-3 pages): {jupiter_sign}. Where does {name} naturally expand? What brings professional joy and abundance?
-
-5. IDEAL WORK ENVIRONMENT (1-2 pages): What settings, cultures, and work styles allow {name} to thrive? Her optimal career conditions?
-
-6. CHALLENGES & PROFESSIONAL GROWTH (1-2 pages): Where does {name} need to develop professionally? Her growth edges and learning opportunities?
-
-7. LIFE PURPOSE THROUGH WORK (1-2 pages): How can {name}'s career serve her spiritual purpose and the world?
-
-8. ABUNDANCE ACTIVATION (1-2 pages): 4-5 rituals, affirmations, and practices for magnetizing career success and prosperity.
-
-9. 5-YEAR VISION & EVOLUTION (1-2 pages): {name}'s career trajectory and evolution over the next 5 years. Her potential and path forward.
-
-TONE: Practical, empowering, specific, and inspirational."""
-    
-    elif report_type == "Life Purpose":
-        prompt = f"""Write a detailed 12-15 page spiritual life purpose profile for {name}.
-
-COSMIC PURPOSE DATA:
-- Core Self (Sun): {sun_sign} at {sun_deg:.2f}°
-- Soul Direction (North Node): {north_node_sign} at {north_node_deg:.2f}°
-- Wounded Healer (Chiron): {chiron_sign} at {chiron_deg:.2f}°
-- Life Direction (Midheaven): {mc_sign} at {mc_deg:.2f}°
-- Spiritual Focus: {spiritual_focus}
-
-WRITE THESE SECTIONS (aim for 12-15 pages total):
-
-1. SOUL'S CALLING (3-4 pages): {north_node_sign}. What is {name}'s soul purpose? Her destiny and evolutionary direction in this lifetime?
-
-2. LIFE MISSION (2-3 pages): {sun_sign}. What is {name}'s core life mission? Her creative expression and authentic purpose?
-
-3. WOUNDED HEALER GIFT (2-3 pages): {chiron_sign}. What is {name}'s deepest wound? How can she transform it into her greatest healing gift to share with the world?
-
-4. PAST PATTERNS & TRANSCENDENCE (2-3 pages): What patterns is {name} transcending? What past-life themes or karmic lessons is she healing?
-
-5. SPIRITUAL GIFTS & TALENTS (1-2 pages): What unique spiritual gifts does {name} possess? How can she develop and share them?
-
-6. PURPOSE ACTIVATION RITUALS (1-2 pages): 4-5 specific rituals and practices to activate, embody, and align with her life purpose.
-
-7. SHADOW WORK & INTEGRATION (1-2 pages): Journal prompts and practices for integrating shadow aspects and stepping fully into her purpose.
-
-8. YOUR COSMIC ROLE (1-2 pages): How does {name} serve the world? Her contribution to collective evolution and healing?
-
-TONE: Deeply spiritual, transformative, empowering, and specific."""
-    
-    elif report_type == "Future Outlook":
-        prompt = f"""Write an extensive 20-30 page spiritual forecast and future outlook for {name}, covering major transits, progressions, and evolutionary themes for the next 12-24 months and beyond.
+        prompt = f"""Write a detailed 12-15 page love and relationship profile for {name}.
 
 COSMIC DATA:
-- Core Self (Sun): {sun_sign} at {sun_deg:.2f}°
-- Emotional Nature (Moon): {moon_sign} at {moon_deg:.2f}°
-- Soul Direction (North Node): {north_node_sign} at {north_node_deg:.2f}°
-- Spiritual Focus: {spiritual_focus}
-- Birth Date: {birthdate}
+Venus: {venus_sign} at {venus_deg:.2f}°
+Mars: {mars_sign} at {mars_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Sun: {sun_sign} at {sun_deg:.2f}°
+Spiritual Focus: {spiritual_focus}
 
-WRITE THESE SECTIONS (aim for 20-30 pages total - this is comprehensive):
+Write 9 sections covering love language, desire, emotional needs, patterns, blocks, healing, and rituals. Be warm, empowering, and specific."""
+    
+    elif report_type == "Career Code":
+        prompt = f"""Write a detailed 12-15 page career and vocation profile for {name}.
 
-1. OVERVIEW & MAJOR THEMES (2-3 pages): What are the overarching themes for {name}'s next 12-24 months? Major evolutionary shifts and opportunities?
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Mercury: {mercury_sign} at {mercury_deg:.2f}°
+Saturn: {saturn_sign} at {saturn_deg:.2f}°
+Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
+Midheaven: {mc_sign} at {mc_deg:.2f}°
+Spiritual Focus: {spiritual_focus}
 
-2. CURRENT TRANSITS & THEIR IMPACT (3-4 pages): How are current planetary transits affecting {name}'s life? Key planetary movements and their significance?
+Write 9 sections covering calling, talents, discipline, abundance, work environment, challenges, purpose, rituals, and 5-year vision."""
+    
+    elif report_type == "Life Purpose":
+        prompt = f"""Write a detailed 12-15 page life purpose and soul mission profile for {name}.
 
-3. LOVE & RELATIONSHIPS FORECAST (3-4 pages): What does the future hold for {name}'s romantic life and relationships? Opportunities, challenges, and timing?
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+North Node: {north_node_sign} at {north_node_deg:.2f}°
+Chiron: {chiron_sign} at {chiron_deg:.2f}°
+Midheaven: {mc_sign} at {mc_deg:.2f}°
+Spiritual Focus: {spiritual_focus}
 
-4. CAREER & ABUNDANCE FORECAST (3-4 pages): Career developments, professional opportunities, and abundance cycles ahead? When are peak opportunity windows?
+Write 8 sections covering soul calling, life mission, wounded healer gift, past patterns, spiritual gifts, activation rituals, shadow work, and cosmic role."""
+    
+    elif report_type == "Future Outlook":
+        prompt = f"""Write an extensive 20-30 page future forecast for {name} covering the next 12-24 months.
 
-5. PERSONAL GROWTH & TRANSFORMATION (3-4 pages): What spiritual and personal growth is {name} being called into? Healing opportunities and evolution?
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+North Node: {north_node_sign} at {north_node_deg:.2f}°
+Birth Date: {birthdate}
+Spiritual Focus: {spiritual_focus}
 
-6. HEALTH & WELLNESS CYCLES (2-3 pages): Physical, emotional, and spiritual wellness themes. Optimal times for healing and renewal?
+Write 12 comprehensive sections covering major themes, transits, love forecast, career forecast, personal growth, health, finances, family, creativity, challenges, monthly breakdown, and rituals. Be extensive and detailed."""
+    
+    elif report_type == "Cosmic Calendar":
+        prompt = f"""Write a detailed 30-day cosmic calendar and daily guidance for {name}.
 
-7. FINANCIAL FORECAST (2-3 pages): Money cycles, abundance patterns, and financial opportunities ahead?
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Spiritual Focus: {spiritual_focus}
 
-8. FAMILY & HOME THEMES (2-3 pages): Family dynamics, home changes, and domestic themes in the coming period?
+Provide daily guidance for 30 days including:
+- Daily cosmic weather and planetary influences
+- Recommended actions and focus areas
+- Rituals and practices for each day
+- Affirmations and intentions
+- Warnings or things to avoid
 
-9. CREATIVE & SPIRITUAL EXPANSION (2-3 pages): Creative projects, spiritual development, and expansion opportunities?
+Make it practical, actionable, and spiritually empowering."""
+    
+    else:
+        prompt = f"""Write a personalized {report_type} for {name}.
 
-10. CHALLENGES & GROWTH EDGES (2-3 pages): Potential challenges, obstacles, and how to work with them? Growth opportunities disguised as difficulties?
+COSMIC DATA: Sun {sun_sign}, Moon {moon_sign}, Rising {rising_sign}, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}, North Node {north_node_sign}, Chiron {chiron_sign}.
 
-11. MONTHLY BREAKDOWN (3-4 pages): Key themes, opportunities, and focus areas for each month ahead (next 12 months)?
+Spiritual focus: {spiritual_focus}
 
-12. RITUALS & ACTIVATION PRACTICES (2-3 pages): 6-8 powerful rituals, ceremonies, and practices to align with an
+Write a warm, mystical, empowering report using these placements. Be detailed and specific."""
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=4000
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating {report_type}: {e}")
+        return f"Unable to generate report. Error: {str(e)}"
+
+def get_sign_from_degree(degree):
+    """Convert zodiac degree to sign."""
+    signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
+    sign_index = int(degree / 30)
+    return signs[sign_index % 12]
+
+def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_focus, content):
+    pdf = FPDF()
+    pdf.add_page()
+    
+    logo_paths = ["logos/NEW_LOGO.png", "logos/NEW LOGO.png", "/opt/render/project/src/logos/NEW_LOGO.png"]
+    
+    for logo_path in logo_paths:
+        if os.path.exists(logo_path):
+            try:
+                pdf.image(logo_path, x=150, y=10, w=50)
+                logger.info(f"Logo added from: {logo_path}")
+                break
+            except Exception as e:
+                logger.warning(f"Failed to add logo from {logo_path}: {e}")
+    
+    pdf.set_font("Helvetica", "B", 16)
+    pdf.cell(0, 10, f"{report_type}", ln=True, align="C")
+    pdf.set_font("Helvetica", "", 10)
+    pdf.cell(0, 5, f"For: {name}", ln=True, align="C")
+    pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True, align="C")
+    pdf.ln(5)
+    
+    pdf.set_font("Helvetica", "", 9)
+    content_clean = content.encode('latin-1', errors='replace').decode('latin-1')
+    pdf.multi_cell(0, 5, content_clean)
+    
+    filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
+    pdf.output(filename)
+    logger.info(f"PDF generated: {filename}")
+    return filename
