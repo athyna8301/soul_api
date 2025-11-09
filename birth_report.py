@@ -262,4 +262,4 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     logo_paths = ["logos/NEW_LOGO.png", "logos/NEW LOGO.png", "/opt/render/project/src/logos/NEW_LOGO.png"]
     
     for logo_path in logo_paths:
-        if os.path.exists(logo_
+        if os.
