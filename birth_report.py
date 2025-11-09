@@ -261,14 +261,14 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     
     logo_paths = ["logos/NEW_LOGO.png", "logos/NEW LOGO.png", "/opt/render/project/src/logos/NEW_LOGO.png"]
 
-for logo_path in logo_paths:
-    if os.path.exists(logo_path):
-        try:
-            pdf.image(logo_path, x=150, y=10, w=50)
-            logger.info(f"Logo added from: {logo_path}")
-            break
-        except Exception as e:
-            logger.warning(f"Failed to add logo from {logo_path}: {e}")
+    for logo_path in logo_paths:
+        if os.path.exists(logo_path):
+            try:
+                pdf.image(logo_path, x=150, y=10, w=50)
+                logger.info(f"Logo added from: {logo_path}")
+                break
+            except Exception as e:
+                logger.warning(f"Failed to add logo from {logo_path}: {e}")
 
 pdf.set_font("Helvetica", "B", 16)
 pdf.cell(0, 10, f"{report_type}", ln=True, align="C")
