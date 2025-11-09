@@ -72,7 +72,7 @@ North Node: {north_node_sign} at {north_node_deg:.2f}°
 Chiron: {chiron_sign} at {chiron_deg:.2f}°
 Midheaven: {mc_sign} at {mc_deg:.2f}°
 
-Write 12 detailed sections (15-20 pages total). Be comprehensive, specific, and deeply insightful."""
+Write 12 detailed sections (15-20 pages total): Cosmic Blueprint Overview, Primary Archetype Deep Dive, Emotional Landscape, Persona & First Impressions, Communication & Intellect, Love & Relationships, Expansion & Growth, Discipline & Structure, Soul's Direction, Wounded Healer, Life Purpose & Vocation, Integration & Shadow Work. Be comprehensive, specific, and deeply insightful."""
     
     elif report_type == "Love Blueprint":
         prompt = f"""Write a detailed 12-15 page love and relationship profile for {name}.
@@ -84,7 +84,7 @@ Moon: {moon_sign} at {moon_deg:.2f}°
 Sun: {sun_sign} at {sun_deg:.2f}°
 Spiritual Focus: {spiritual_focus}
 
-Write 9 sections covering love language, desire, emotional needs, patterns, blocks, healing, and rituals. Be warm, empowering, and specific."""
+Write 9 detailed sections (12-15 pages total): Love Archetype, Desire & Passion, Emotional Intimacy, Core Identity in Love, Partnership Patterns, Love Blocks & Healing, Sacred Union Vision, Love Activation Rituals, Integration & Practices. Be warm, empowering, and specific."""
     
     elif report_type == "Career Code":
         prompt = f"""Write a detailed 12-15 page career and vocation profile for {name}.
@@ -97,7 +97,7 @@ Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
 Midheaven: {mc_sign} at {mc_deg:.2f}°
 Spiritual Focus: {spiritual_focus}
 
-Write 9 sections covering calling, talents, discipline, abundance, work environment, challenges, purpose, rituals, and 5-year vision."""
+Write 9 detailed sections (12-15 pages total): Career Calling, Natural Talents & Gifts, Discipline & Building Mastery, Expansion & Abundance, Ideal Work Environment, Challenges & Professional Growth, Life Purpose Through Work, Abundance Activation, 5-Year Vision & Evolution. Be practical, empowering, and inspirational."""
     
     elif report_type == "Life Purpose":
         prompt = f"""Write a detailed 12-15 page life purpose and soul mission profile for {name}.
@@ -109,7 +109,82 @@ Chiron: {chiron_sign} at {chiron_deg:.2f}°
 Midheaven: {mc_sign} at {mc_deg:.2f}°
 Spiritual Focus: {spiritual_focus}
 
-Write 8 sections covering soul calling, life mission, wounded healer gift, past patterns, spiritual gifts, activation rituals, shadow work, and cosmic role."""
+Write 8 detailed sections (12-15 pages total): Soul's Calling, Life Mission, Wounded Healer Gift, Past Patterns & Transcendence, Spiritual Gifts & Talents, Purpose Activation Rituals, Shadow Work & Integration, Your Cosmic Role. Be deeply spiritual, transformative, and empowering."""
+    
+    elif report_type == "Starseed Lineage":
+        prompt = f"""Write a detailed 10-15 page Starseed Lineage and galactic soul origin profile for {name}.
+
+BIRTH DATA:
+Name: {name}
+Born: {birthdate} at {birthtime} in {birthplace}
+Spiritual Focus: {spiritual_focus}
+
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Rising: {rising_sign} at {ascendant_deg:.2f}°
+Mercury: {mercury_sign} at {mercury_deg:.2f}°
+Venus: {venus_sign} at {venus_deg:.2f}°
+Mars: {mars_sign} at {mars_deg:.2f}°
+Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
+Saturn: {saturn_sign} at {saturn_deg:.2f}°
+North Node: {north_node_sign} at {north_node_deg:.2f}°
+Chiron: {chiron_sign} at {chiron_deg:.2f}°
+
+Write 9 detailed sections (10-15 pages total): Cosmic Blueprint & Divine Origin, Starseed Lineage Identification, Galactic Soul Mission, Starseed Gifts & Abilities, Earth Mission & Service, Starseed Challenges & Integration, Connection to Star Family, Activation Codes & Practices, Embodying Your Cosmic Power. Be mystical, empowering, specific, and deeply spiritual."""
+    
+    elif report_type == "Human Design":
+        prompt = f"""Write a detailed 10-15 page Human Design profile for {name}.
+
+BIRTH DATA:
+Name: {name}
+Born: {birthdate} at {birthtime} in {birthplace}
+Spiritual Focus: {spiritual_focus}
+
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Rising: {rising_sign} at {ascendant_deg:.2f}°
+Mercury: {mercury_sign} at {mercury_deg:.2f}°
+Venus: {venus_sign} at {venus_deg:.2f}°
+Mars: {mars_sign} at {mars_deg:.2f}°
+
+Write 8 detailed sections (10-15 pages total): Human Design Overview, Type & Strategy, Authority & Decision Making, Profile & Life Theme, Centers & Channels, Defined vs Undefined Centers, Conditioning & Shadow Work, Living Your Design. Use the chart data to inform the Human Design analysis. Be practical, empowering, and specific."""
+    
+    elif report_type == "Astrocartography":
+        prompt = f"""Write a detailed 10-15 page Astrocartography and relocation profile for {name}.
+
+BIRTH DATA:
+Name: {name}
+Born: {birthdate} at {birthtime} in {birthplace}
+Spiritual Focus: {spiritual_focus}
+
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Rising: {rising_sign} at {ascendant_deg:.2f}°
+Mercury: {mercury_sign} at {mercury_deg:.2f}°
+Venus: {venus_sign} at {venus_deg:.2f}°
+Mars: {mars_sign} at {mars_deg:.2f}°
+
+Write 8 detailed sections (10-15 pages total): Astrocartography Overview, Sun Lines, Moon Lines, Mercury Lines, Venus Lines, Mars Lines, Optimal Locations & Relocation Guidance, Activation Practices. Be practical, specific, and empowering."""
+    
+    elif report_type == "Shadow Work Workbook":
+        prompt = f"""Write a detailed 12-15 page Shadow Work Workbook and integration guide for {name}.
+
+BIRTH DATA:
+Name: {name}
+Born: {birthdate} at {birthtime} in {birthplace}
+Spiritual Focus: {spiritual_focus}
+
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Saturn: {saturn_sign} at {saturn_deg:.2f}°
+Chiron: {chiron_sign} at {chiron_deg:.2f}°
+North Node: {north_node_sign} at {north_node_deg:.2f}°
+
+Write 10 detailed sections (12-15 pages total): Shadow Work Introduction, Identifying Your Shadows, Core Wounds & Patterns, Saturn's Lessons, Chiron's Healing, North Node Integration, 21-Day Shadow Work Challenge (with daily prompts), Journaling Exercises, Rituals & Ceremonies, Integration & Wholeness. Include 15-20 specific journal prompts and practices. Be compassionate, trauma-informed, and transformative."""
     
     elif report_type == "Future Outlook":
         prompt = f"""Write an extensive 20-30 page future forecast for {name} covering the next 12-24 months.
@@ -121,9 +196,9 @@ North Node: {north_node_sign} at {north_node_deg:.2f}°
 Birth Date: {birthdate}
 Spiritual Focus: {spiritual_focus}
 
-Write 12 comprehensive sections covering major themes, transits, love forecast, career forecast, personal growth, health, finances, family, creativity, challenges, monthly breakdown, and rituals. Be extensive and detailed."""
+Write 12 comprehensive sections (20-30 pages total): Overview & Major Themes, Current Transits & Impact, Love & Relationships Forecast, Career & Abundance Forecast, Personal Growth & Transformation, Health & Wellness Cycles, Financial Forecast, Family & Home Themes, Creative & Spiritual Expansion, Challenges & Growth Edges, Monthly Breakdown (12 months), Rituals & Activation Practices. Be extensive, detailed, and specific."""
     
-    elif report_type == "Cosmic Calendar":
+    elif report_type == "Cosmic Calendar (One Time Purchase)" or report_type == "Cosmic Calendar (Monthly Subscription)":
         prompt = f"""Write a detailed 30-day cosmic calendar and daily guidance for {name}.
 
 COSMIC DATA:
@@ -138,7 +213,21 @@ Provide daily guidance for 30 days including:
 - Affirmations and intentions
 - Warnings or things to avoid
 
-Make it practical, actionable, and spiritually empowering."""
+Make it practical, actionable, and spiritually empowering. Format as: Day 1, Day 2, etc."""
+    
+    elif report_type == "Numerology Nexus":
+        prompt = f"""Write a detailed 10-15 page Numerology profile for {name}.
+
+BIRTH DATA:
+Name: {name}
+Born: {birthdate}
+Spiritual Focus: {spiritual_focus}
+
+COSMIC DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+
+Write 8 detailed sections (10-15 pages total): Numerology Overview, Life Path Number, Expression Number, Soul Urge Number, Personality Number, Birth Day Number, Personal Year Cycles, Numerology Practices & Activation. Use the birth date to calculate all numerology numbers. Be detailed, specific, and empowering."""
     
     else:
         prompt = f"""Write a personalized {report_type} for {name}.
@@ -173,26 +262,4 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     logo_paths = ["logos/NEW_LOGO.png", "logos/NEW LOGO.png", "/opt/render/project/src/logos/NEW_LOGO.png"]
     
     for logo_path in logo_paths:
-        if os.path.exists(logo_path):
-            try:
-                pdf.image(logo_path, x=150, y=10, w=50)
-                logger.info(f"Logo added from: {logo_path}")
-                break
-            except Exception as e:
-                logger.warning(f"Failed to add logo from {logo_path}: {e}")
-    
-    pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, f"{report_type}", ln=True, align="C")
-    pdf.set_font("Helvetica", "", 10)
-    pdf.cell(0, 5, f"For: {name}", ln=True, align="C")
-    pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True, align="C")
-    pdf.ln(5)
-    
-    pdf.set_font("Helvetica", "", 9)
-    content_clean = content.encode('latin-1', errors='replace').decode('latin-1')
-    pdf.multi_cell(0, 5, content_clean)
-    
-    filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
-    pdf.output(filename)
-    logger.info(f"PDF generated: {filename}")
-    return filename
+        if os.path.exists(logo_
