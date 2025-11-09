@@ -74,11 +74,12 @@ try:
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=4000
-    )
-    return response.choices[0].message.content
-except Exception as e:
-    logger.error(f"Error generating {report_type}: {e}")
-    return f"Unable to generate report. Error: {str(e)}"
+            )
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating {report_type}: {e}")
+        return f"Unable to generate report. Error: {str(e)}"
+
 
 def get_sign_from_degree(degree):
     signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
