@@ -260,6 +260,28 @@ def generate_pdf(name, birthdate, birthtime, birthplace, report_type, spiritual_
     pdf.add_page()
     
     logo_paths = ["logos/NEW_LOGO.png", "logos/NEW LOGO.png", "/opt/render/project/src/logos/NEW_LOGO.png"]
-    
-    for logo_path in logo_paths:
-        if os.
+
+for logo_path in logo_paths:
+    if os.path.exists(logo_path):
+        try:
+            pdf.image(logo_path, x=150, y=10, w=50)
+            logger.info(f"Logo added from: {logo_path}")
+            break
+        except Exception as e:
+            logger.warning(f"Failed to add logo from {logo_path}: {e}")
+
+pdf.set_font("Helvetica", "B", 16)
+pdf.cell(0, 10, f"{report_type}", ln=True, align="C")
+pdf.set_font("Helvetica", "", 10)
+pdf.cell(0, 5, f"For: {name}", ln=True, align="C")
+pdf.cell(0, 5, f"Born: {birthdate} at {birthtime} in {birthplace}", ln=True, align="C")
+pdf.ln(5)
+
+pdf.set_font("Helvetica", "", 9)
+content_clean = content.encode('latin-1', errors='replace').decode('latin-1')
+pdf.multi_cell(0, 5, content_clean)
+
+filename = f"/tmp/{name.replace(' ', '_')}_chart.pdf"
+pdf.output(filename)
+logger.info(f"PDF generated: {filename}")
+return filename
