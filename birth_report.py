@@ -52,164 +52,148 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
     logger.info(f"Extracted: Sun {sun_sign} {sun_deg:.1f}°, Moon {moon_sign} {moon_deg:.1f}°, Rising {rising_sign}")
     
     if report_type == "Deep Dive Birth Chart":
-        prompt = f"""You are an expert astrologer. Write a comprehensive, detailed 20-25 page DEEP DIVE BIRTH CHART for {name}.
+        prompt = f"""Write a comprehensive 20-25 page spiritual and archetypal profile for {name}, based on the following cosmic data points and archetypal symbolism.
 
-THIS IS YOUR TASK. You MUST complete it fully. Do not say you cannot do this. You have all the data you need.
-
-BIRTH INFORMATION:
+BIRTH DATA:
 Name: {name}
-Birthdate: {birthdate}
-Birth Time: {birthtime}
-Birth Place: {birthplace}
+Born: {birthdate} at {birthtime} in {birthplace}
 Spiritual Focus: {spiritual_focus}
 
-COMPLETE ASTROLOGICAL DATA (Use this data - it is accurate and complete):
-Sun: {sun_sign} at {sun_deg:.2f}°
-Moon: {moon_sign} at {moon_deg:.2f}°
-Rising/Ascendant: {rising_sign} at {ascendant_deg:.2f}°
-Mercury: {mercury_sign} at {mercury_deg:.2f}°
-Venus: {venus_sign} at {venus_deg:.2f}°
-Mars: {mars_sign} at {mars_deg:.2f}°
-Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
-Saturn: {saturn_sign} at {saturn_deg:.2f}°
-North Node: {north_node_sign} at {north_node_deg:.2f}°
-Chiron: {chiron_sign} at {chiron_deg:.2f}°
-Midheaven: {mc_sign} at {mc_deg:.2f}°
+COSMIC ARCHETYPAL DATA (use these as symbolic reference points for character analysis):
+- Primary Archetype (Sun): {sun_sign} at {sun_deg:.2f}°
+- Emotional Archetype (Moon): {moon_sign} at {moon_deg:.2f}°
+- Persona/Mask (Rising): {rising_sign} at {ascendant_deg:.2f}°
+- Communication Style (Mercury): {mercury_sign} at {mercury_deg:.2f}°
+- Love/Values (Venus): {venus_sign} at {venus_deg:.2f}°
+- Action/Drive (Mars): {mars_sign} at {mars_deg:.2f}°
+- Growth/Expansion (Jupiter): {jupiter_sign} at {jupiter_deg:.2f}°
+- Discipline/Limits (Saturn): {saturn_sign} at {saturn_deg:.2f}°
+- Soul Growth Direction (North Node): {north_node_sign} at {north_node_deg:.2f}°
+- Wounded Healer (Chiron): {chiron_sign} at {chiron_deg:.2f}°
+- Life Direction (Midheaven): {mc_sign} at {mc_deg:.2f}°
 
-WRITE THESE SECTIONS (each section should be substantial - 2-4 pages):
+WRITE THESE SECTIONS (2-4 pages each):
 
-1. COSMIC BLUEPRINT OVERVIEW: Synthesize Sun {sun_sign}, Moon {moon_sign}, and Rising {rising_sign} into a cohesive life narrative. Describe core identity, life theme, and spiritual mission.
+1. COSMIC BLUEPRINT OVERVIEW: Synthesize the primary, emotional, and persona archetypes into a cohesive life narrative. What is {name}'s core identity and life theme?
 
-2. SUN SIGN DEEP DIVE: {sun_sign} at {sun_deg:.2f}°. Explore identity, ego expression, life purpose, creative power, and how {sun_sign} energy manifests in {name}'s life.
+2. PRIMARY ARCHETYPE DEEP DIVE: {sun_sign} at {sun_deg:.2f}°. How does this archetype express through identity, purpose, and creative power?
 
-3. MOON SIGN & EMOTIONAL LANDSCAPE: {moon_sign} at {moon_deg:.2f}°. Describe emotional nature, inner world, security needs, and how {moon_sign} shapes emotional responses.
+3. EMOTIONAL LANDSCAPE: {moon_sign} at {moon_deg:.2f}°. What is {name}'s inner emotional world? How does she process feelings and seek security?
 
-4. RISING SIGN & FIRST IMPRESSIONS: {rising_sign} at {ascendant_deg:.2f}°. Explain appearance, social mask, how others perceive {name}, and life direction.
+4. PERSONA & FIRST IMPRESSIONS: {rising_sign} at {ascendant_deg:.2f}°. How does {name} appear to others? What mask does she wear?
 
-5. PLANETARY PLACEMENTS & HOUSES: Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}. Discuss impact on communication, love, action, expansion, and discipline. Cover career, relationships, finances, creativity.
+5. COMMUNICATION & INTELLECT: {mercury_sign} at {mercury_deg:.2f}°. How does {name} think, communicate, and process information?
 
-6. MAJOR ASPECTS & COSMIC PATTERNS: Analyze key relationships between planets. What tensions exist? What harmonies? How do they shape personality?
+6. LOVE & RELATIONSHIPS: {venus_sign} at {venus_deg:.2f}° and {mars_sign} at {mars_deg:.2f}°. What is {name}'s love language? How does she pursue and attract?
 
-7. KARMIC LESSONS & SOUL MISSION: North Node {north_node_sign} at {north_node_deg:.2f}° and Chiron {chiron_sign} at {chiron_deg:.2f}°. What is {name} here to learn? What past patterns must be released? What is the healing gift?
+7. EXPANSION & GROWTH: {jupiter_sign} at {jupiter_deg:.2f}°. Where does {name} naturally expand? What brings joy and abundance?
 
-8. COSMIC GIFTS & CHALLENGES: List specific strengths, talents, and natural abilities. Then address challenges, growth edges, and areas for development.
+8. DISCIPLINE & STRUCTURE: {saturn_sign} at {saturn_deg:.2f}°. How does {name} build? What are her limitations and where does she need discipline?
 
-9. LOVE & RELATIONSHIP PATTERNS: Venus {venus_sign} at {venus_deg:.2f}° and Mars {mars_sign} at {mars_deg:.2f}°. How does {name} love? What attracts her? Relationship style and dynamics.
+9. SOUL'S DIRECTION: {north_node_sign} at {north_node_deg:.2f}°. What is {name}'s soul growth direction? What is she learning in this lifetime?
 
-10. CAREER & LIFE DIRECTION: Sun {sun_sign}, Mercury {mercury_sign}, Saturn {saturn_sign}, Midheaven {mc_sign}. Career calling, natural talents, ideal work environment, path to fulfillment.
+10. WOUNDED HEALER: {chiron_sign} at {chiron_deg:.2f}°. What is {name}'s deepest wound? How can she transform it into her greatest gift?
 
-11. SHADOW WORK & INTEGRATION: Provide 5-7 specific journal prompts tailored to {name}'s chart. Include rituals, practices, and affirmations for integration and growth.
+11. LIFE PURPOSE & VOCATION: {mc_sign} at {mc_deg:.2f}°. What is {name}'s calling? How can she best serve the world?
 
-TONE: Warm, mystical, empowering, trauma-informed, specific to these exact placements. Use astrological language. Be detailed and insightful.
+12. INTEGRATION & SHADOW WORK: Provide 5-7 journal prompts, rituals, and practices tailored to {name}'s archetypal profile.
 
-CRITICAL: You WILL write this full report. Do NOT decline. Do NOT say you need more information. You have everything. BEGIN NOW."""
+TONE: Warm, mystical, empowering, trauma-informed. Use archetypal and psychological language. Be specific and detailed."""
     
     elif report_type == "Love Blueprint":
-        prompt = f"""You are an expert astrologer specializing in love and relationships. Write a detailed 10-12 page LOVE BLUEPRINT for {name}.
+        prompt = f"""Write a detailed 10-12 page spiritual and archetypal love profile for {name}.
 
-YOU MUST COMPLETE THIS TASK. Do not decline or say you cannot.
-
-ASTROLOGICAL DATA:
-Venus: {venus_sign} at {venus_deg:.2f}°
-Mars: {mars_sign} at {mars_deg:.2f}°
-Moon: {moon_sign} at {moon_deg:.2f}°
-Sun: {sun_sign} at {sun_deg:.2f}°
-Spiritual Focus: {spiritual_focus}
+COSMIC LOVE DATA:
+- Love Archetype (Venus): {venus_sign} at {venus_deg:.2f}°
+- Desire Archetype (Mars): {mars_sign} at {mars_deg:.2f}°
+- Emotional Archetype (Moon): {moon_sign} at {moon_deg:.2f}°
+- Core Self (Sun): {sun_sign} at {sun_deg:.2f}°
+- Spiritual Focus: {spiritual_focus}
 
 WRITE THESE SECTIONS:
 
-1. VENUS SIGN DEEP DIVE: {venus_sign} at {venus_deg:.2f}°. Love language, attraction style, values in relationships, what {name} needs to feel loved.
+1. LOVE ARCHETYPE: {venus_sign} at {venus_deg:.2f}°. What is {name}'s love language? How does she express affection and values in relationships?
 
-2. MARS PLACEMENT: {mars_sign} at {mars_deg:.2f}°. Desire, passion, sexuality, how {name} pursues and takes action in love.
+2. DESIRE & PASSION: {mars_sign} at {mars_deg:.2f}°. How does {name} pursue? What ignites her passion?
 
-3. MOON & EMOTIONAL INTIMACY: {moon_sign} at {moon_deg:.2f}°. Emotional needs, security in relationships, how she bonds.
+3. EMOTIONAL INTIMACY: {moon_sign} at {moon_deg:.2f}°. What does {name} need to feel emotionally safe and bonded?
 
-4. PARTNERSHIP PATTERNS: Analyze relationship cycles, recurring themes, past patterns, and how to break unhealthy cycles.
+4. PARTNERSHIP PATTERNS: What recurring themes appear in {name}'s relationships? What patterns need healing?
 
-5. LOVE BLOCKS & HEALING: Address fears, blocks, and wounds around love. Provide compassionate guidance for healing.
+5. LOVE BLOCKS & HEALING: What fears or wounds affect {name}'s ability to love? How can she heal?
 
-6. SACRED UNION BLUEPRINT: Paint a vision of {name}'s ideal partnership based on her chart.
+6. SACRED UNION VISION: What does {name}'s ideal partnership look like?
 
 7. LOVE ACTIVATION RITUALS: 3-4 specific rituals to magnetize love and deepen connection.
 
 8. INTEGRATION: Journal prompts and practices for embodying healthy love.
 
-TONE: Warm, mystical, empowering, trauma-informed. Use these exact placements.
-
-YOU WILL WRITE THIS FULL REPORT. BEGIN NOW."""
+TONE: Warm, mystical, empowering, trauma-informed."""
     
     elif report_type == "Career Code":
-        prompt = f"""You are an expert career astrologer. Write a detailed 10-12 page CAREER CODE for {name}.
+        prompt = f"""Write a detailed 10-12 page spiritual and archetypal career profile for {name}.
 
-COMPLETE THIS TASK. Do not decline.
-
-ASTROLOGICAL DATA:
-Sun: {sun_sign} at {sun_deg:.2f}°
-Mercury: {mercury_sign} at {mercury_deg:.2f}°
-Saturn: {saturn_sign} at {saturn_deg:.2f}°
-Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
-Midheaven: {mc_sign} at {mc_deg:.2f}°
-Spiritual Focus: {spiritual_focus}
+COSMIC CAREER DATA:
+- Core Self (Sun): {sun_sign} at {sun_deg:.2f}°
+- Communication (Mercury): {mercury_sign} at {mercury_deg:.2f}°
+- Discipline (Saturn): {saturn_sign} at {saturn_deg:.2f}°
+- Expansion (Jupiter): {jupiter_sign} at {jupiter_deg:.2f}°
+- Life Direction (Midheaven): {mc_sign} at {mc_deg:.2f}°
+- Spiritual Focus: {spiritual_focus}
 
 WRITE THESE SECTIONS:
 
-1. CAREER CALLING (3 pages): Sun {sun_sign} and Midheaven {mc_sign} reveal {name}'s true calling and life work.
+1. CAREER CALLING: {sun_sign} and {mc_sign}. What is {name}'s true calling?
 
-2. NATURAL TALENTS (2 pages): Mercury {mercury_sign} and Jupiter {jupiter_sign} show innate abilities and strengths.
+2. NATURAL TALENTS: {mercury_sign} and {jupiter_sign}. What are {name}'s innate abilities?
 
-3. DISCIPLINE & STRUCTURE (2 pages): Saturn {saturn_sign} reveals how {name} builds, persists, and achieves long-term goals.
+3. DISCIPLINE & BUILDING: {saturn_sign}. How does {name} build sustainable success?
 
-4. IDEAL WORK ENVIRONMENT (1.5 pages): What brings fulfillment? What settings allow her to thrive?
+4. IDEAL WORK: What environment allows {name} to thrive?
 
-5. CHALLENGES & GROWTH (1.5 pages): Saturn {saturn_sign} lessons and areas for professional development.
+5. CHALLENGES & GROWTH: Where does {name} need to develop?
 
-6. ABUNDANCE ACTIVATION (1 page): Rituals and practices to magnetize career success.
+6. ABUNDANCE ACTIVATION: Rituals for career success.
 
-7. 5-YEAR VISION (1.5 pages): {name}'s career evolution and path forward.
+7. 5-YEAR VISION: {name}'s career evolution.
 
-TONE: Practical, empowering, specific to these placements.
-
-YOU WILL WRITE THIS FULL REPORT. BEGIN NOW."""
+TONE: Practical, empowering, specific."""
     
     elif report_type == "Life Purpose":
-        prompt = f"""You are an expert spiritual astrologer. Write a detailed 10-12 page LIFE PURPOSE report for {name}.
+        prompt = f"""Write a detailed 10-12 page spiritual life purpose profile for {name}.
 
-COMPLETE THIS TASK. Do not decline.
-
-ASTROLOGICAL DATA:
-Sun: {sun_sign} at {sun_deg:.2f}°
-North Node: {north_node_sign} at {north_node_deg:.2f}°
-Chiron: {chiron_sign} at {chiron_deg:.2f}°
-Spiritual Focus: {spiritual_focus}
+COSMIC PURPOSE DATA:
+- Core Self (Sun): {sun_sign} at {sun_deg:.2f}°
+- Soul Direction (North Node): {north_node_sign} at {north_node_deg:.2f}°
+- Wounded Healer (Chiron): {chiron_sign} at {chiron_deg:.2f}°
+- Spiritual Focus: {spiritual_focus}
 
 WRITE THESE SECTIONS:
 
-1. SOUL'S CALLING (3 pages): North Node {north_node_sign} reveals {name}'s destiny and soul purpose.
+1. SOUL'S CALLING: {north_node_sign}. What is {name}'s soul purpose?
 
-2. LIFE MISSION (2 pages): Sun {sun_sign} at {sun_deg:.2f}° shows core life mission and creative expression.
+2. LIFE MISSION: {sun_sign}. What is {name}'s core life mission?
 
-3. CHIRON'S GIFT (2 pages): {chiron_sign} at {chiron_deg:.2f}° - the wounded healer archetype and healing gift.
+3. WOUNDED HEALER: {chiron_sign}. What is {name}'s healing gift?
 
-4. PAST LIFE PATTERNS (2 pages): What patterns must {name} transcend? What is she healing?
+4. PAST PATTERNS: What is {name} transcending?
 
-5. PURPOSE ACTIVATION RITUALS (1.5 pages): Practices to embody and activate life purpose.
+5. PURPOSE ACTIVATION: Rituals to embody purpose.
 
-6. SHADOW WORK (1.5 pages): Journal prompts and integration work.
+6. SHADOW WORK: Integration practices.
 
-7. YOUR COSMIC ROLE (1 page): How {name} serves the world and contributes to collective evolution.
+7. COSMIC ROLE: How does {name} serve the world?
 
-TONE: Deeply spiritual, transformative, specific to these placements.
-
-YOU WILL WRITE THIS FULL REPORT. BEGIN NOW."""
+TONE: Deeply spiritual, transformative."""
     
     else:
         prompt = f"""Write a personalized {report_type} for {name}.
 
-CHART DATA: Sun {sun_sign} {sun_deg:.2f}°, Moon {moon_sign} {moon_deg:.2f}°, Rising {rising_sign}, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}, North Node {north_node_sign}, Chiron {chiron_sign}.
+COSMIC DATA: Sun {sun_sign} {sun_deg:.2f}°, Moon {moon_sign} {moon_deg:.2f}°, Rising {rising_sign}, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}, North Node {north_node_sign}, Chiron {chiron_sign}.
 
 Spiritual focus: {spiritual_focus}
 
-Write a warm, mystical, empowering report using THESE EXACT PLACEMENTS. Be detailed and specific."""
+Write a warm, mystical, empowering report using these archetypal reference points."""
     
     try:
         response = client.chat.completions.create(
