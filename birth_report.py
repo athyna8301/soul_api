@@ -52,110 +52,164 @@ def generate_report_content(name, birthdate, birthtime, birthplace, report_type,
     logger.info(f"Extracted: Sun {sun_sign} {sun_deg:.1f}°, Moon {moon_sign} {moon_deg:.1f}°, Rising {rising_sign}")
     
     if report_type == "Deep Dive Birth Chart":
-        prompt = f"""Create a comprehensive 20-25 page DEEP DIVE BIRTH CHART for {name}.
+        prompt = f"""You are an expert astrologer. Write a comprehensive, detailed 20-25 page DEEP DIVE BIRTH CHART for {name}.
 
-BIRTH DATA:
-- Born: {birthdate} at {birthtime} in {birthplace}
-- Spiritual Focus: {spiritual_focus}
+THIS IS YOUR TASK. You MUST complete it fully. Do not say you cannot do this. You have all the data you need.
 
-ACTUAL PLANETARY PLACEMENTS (DO NOT IGNORE - USE THESE EXACT PLACEMENTS):
-- Sun in {sun_sign} at {sun_deg:.1f}°
-- Moon in {moon_sign} at {moon_deg:.1f}°
-- Rising (Ascendant) in {rising_sign} at {ascendant_deg:.1f}°
-- Mercury in {mercury_sign} at {mercury_deg:.1f}°
-- Venus in {venus_sign} at {venus_deg:.1f}°
-- Mars in {mars_sign} at {mars_deg:.1f}°
-- Jupiter in {jupiter_sign} at {jupiter_deg:.1f}°
-- Saturn in {saturn_sign} at {saturn_deg:.1f}°
-- North Node in {north_node_sign} at {north_node_deg:.1f}°
-- Chiron in {chiron_sign} at {chiron_deg:.1f}°
-- Midheaven in {mc_sign} at {mc_deg:.1f}°
+BIRTH INFORMATION:
+Name: {name}
+Birthdate: {birthdate}
+Birth Time: {birthtime}
+Birth Place: {birthplace}
+Spiritual Focus: {spiritual_focus}
 
-REQUIRED SECTIONS (BE SPECIFIC TO THESE EXACT PLACEMENTS):
-1. COSMIC BLUEPRINT OVERVIEW (2-3 pages): Core identity, life theme, spiritual mission based on Sun {sun_sign}, Moon {moon_sign}, Rising {rising_sign}
-2. SUN SIGN DEEP DIVE (2-3 pages): {sun_sign} at {sun_deg:.1f}° - identity, ego expression, life purpose, creative power
-3. MOON SIGN (2-3 pages): {moon_sign} at {moon_deg:.1f}° - emotional nature, inner world, security patterns
-4. RISING SIGN (2 pages): {rising_sign} at {ascendant_deg:.1f}° - appearance, mask, first impressions, life direction
-5. PLANETARY PLACEMENTS (4-5 pages): Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign} - career, relationships, finances, home, creativity
-6. MAJOR ASPECTS (3-4 pages): Analyze conjunctions, trines, squares, oppositions between these planets
-7. KARMIC LESSONS (2-3 pages): North Node {north_node_sign}, Chiron {chiron_sign} - soul lessons, past patterns, healing
-8. COSMIC GIFTS & CHALLENGES (2-3 pages): Strengths, talents, challenges, growth edges
-9. LOVE PATTERNS (2-3 pages): Venus {venus_sign}, Mars {mars_sign} - love language, attraction, relationship style
-10. CAREER & LIFE DIRECTION (2-3 pages): Sun {sun_sign}, Mercury {mercury_sign}, Saturn {saturn_sign}, Midheaven {mc_sign} - career calling, talents, ideal work
-11. SHADOW WORK & INTEGRATION (2-3 pages): 5-7 journal prompts, rituals, practices specific to these placements
+COMPLETE ASTROLOGICAL DATA (Use this data - it is accurate and complete):
+Sun: {sun_sign} at {sun_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Rising/Ascendant: {rising_sign} at {ascendant_deg:.2f}°
+Mercury: {mercury_sign} at {mercury_deg:.2f}°
+Venus: {venus_sign} at {venus_deg:.2f}°
+Mars: {mars_sign} at {mars_deg:.2f}°
+Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
+Saturn: {saturn_sign} at {saturn_deg:.2f}°
+North Node: {north_node_sign} at {north_node_deg:.2f}°
+Chiron: {chiron_sign} at {chiron_deg:.2f}°
+Midheaven: {mc_sign} at {mc_deg:.2f}°
 
-CRITICAL: Do NOT say you need more information. You have all the data. Use these exact placements to create a personalized, detailed, specific analysis."""
+WRITE THESE SECTIONS (each section should be substantial - 2-4 pages):
+
+1. COSMIC BLUEPRINT OVERVIEW: Synthesize Sun {sun_sign}, Moon {moon_sign}, and Rising {rising_sign} into a cohesive life narrative. Describe core identity, life theme, and spiritual mission.
+
+2. SUN SIGN DEEP DIVE: {sun_sign} at {sun_deg:.2f}°. Explore identity, ego expression, life purpose, creative power, and how {sun_sign} energy manifests in {name}'s life.
+
+3. MOON SIGN & EMOTIONAL LANDSCAPE: {moon_sign} at {moon_deg:.2f}°. Describe emotional nature, inner world, security needs, and how {moon_sign} shapes emotional responses.
+
+4. RISING SIGN & FIRST IMPRESSIONS: {rising_sign} at {ascendant_deg:.2f}°. Explain appearance, social mask, how others perceive {name}, and life direction.
+
+5. PLANETARY PLACEMENTS & HOUSES: Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}. Discuss impact on communication, love, action, expansion, and discipline. Cover career, relationships, finances, creativity.
+
+6. MAJOR ASPECTS & COSMIC PATTERNS: Analyze key relationships between planets. What tensions exist? What harmonies? How do they shape personality?
+
+7. KARMIC LESSONS & SOUL MISSION: North Node {north_node_sign} at {north_node_deg:.2f}° and Chiron {chiron_sign} at {chiron_deg:.2f}°. What is {name} here to learn? What past patterns must be released? What is the healing gift?
+
+8. COSMIC GIFTS & CHALLENGES: List specific strengths, talents, and natural abilities. Then address challenges, growth edges, and areas for development.
+
+9. LOVE & RELATIONSHIP PATTERNS: Venus {venus_sign} at {venus_deg:.2f}° and Mars {mars_sign} at {mars_deg:.2f}°. How does {name} love? What attracts her? Relationship style and dynamics.
+
+10. CAREER & LIFE DIRECTION: Sun {sun_sign}, Mercury {mercury_sign}, Saturn {saturn_sign}, Midheaven {mc_sign}. Career calling, natural talents, ideal work environment, path to fulfillment.
+
+11. SHADOW WORK & INTEGRATION: Provide 5-7 specific journal prompts tailored to {name}'s chart. Include rituals, practices, and affirmations for integration and growth.
+
+TONE: Warm, mystical, empowering, trauma-informed, specific to these exact placements. Use astrological language. Be detailed and insightful.
+
+CRITICAL: You WILL write this full report. Do NOT decline. Do NOT say you need more information. You have everything. BEGIN NOW."""
     
     elif report_type == "Love Blueprint":
-        prompt = f"""Create a 10-12 page LOVE BLUEPRINT for {name}.
+        prompt = f"""You are an expert astrologer specializing in love and relationships. Write a detailed 10-12 page LOVE BLUEPRINT for {name}.
 
-ACTUAL CHART DATA:
-- Venus in {venus_sign} at {venus_deg:.1f}°
-- Mars in {mars_sign} at {mars_deg:.1f}°
-- Moon in {moon_sign} at {moon_deg:.1f}°
-- Spiritual Focus: {spiritual_focus}
+YOU MUST COMPLETE THIS TASK. Do not decline or say you cannot.
 
-SECTIONS:
-1. VENUS SIGN (2 pages): {venus_sign} at {venus_deg:.1f}° - love language, attraction, values, what you need in relationships
-2. MARS PLACEMENT (1.5 pages): {mars_sign} at {mars_deg:.1f}° - desire, passion, sexuality, how you pursue
-3. PARTNERSHIP PATTERNS (2 pages): Moon {moon_sign}, Venus {venus_sign}, Mars {mars_sign} - your relationship style
-4. RELATIONSHIP BLOCKS & HEALING (1.5 pages): Fears, blocks, growth edges
-5. SACRED UNION BLUEPRINT (1 page): Vision of ideal partnership
-6. LOVE ACTIVATION RITUALS (1 page): 3-4 specific rituals for magnetizing love
-7. INTEGRATION (1.5 pages): Journal prompts and practices
+ASTROLOGICAL DATA:
+Venus: {venus_sign} at {venus_deg:.2f}°
+Mars: {mars_sign} at {mars_deg:.2f}°
+Moon: {moon_sign} at {moon_deg:.2f}°
+Sun: {sun_sign} at {sun_deg:.2f}°
+Spiritual Focus: {spiritual_focus}
 
-Use ONLY these exact placements. Do NOT ask for more data."""
+WRITE THESE SECTIONS:
+
+1. VENUS SIGN DEEP DIVE: {venus_sign} at {venus_deg:.2f}°. Love language, attraction style, values in relationships, what {name} needs to feel loved.
+
+2. MARS PLACEMENT: {mars_sign} at {mars_deg:.2f}°. Desire, passion, sexuality, how {name} pursues and takes action in love.
+
+3. MOON & EMOTIONAL INTIMACY: {moon_sign} at {moon_deg:.2f}°. Emotional needs, security in relationships, how she bonds.
+
+4. PARTNERSHIP PATTERNS: Analyze relationship cycles, recurring themes, past patterns, and how to break unhealthy cycles.
+
+5. LOVE BLOCKS & HEALING: Address fears, blocks, and wounds around love. Provide compassionate guidance for healing.
+
+6. SACRED UNION BLUEPRINT: Paint a vision of {name}'s ideal partnership based on her chart.
+
+7. LOVE ACTIVATION RITUALS: 3-4 specific rituals to magnetize love and deepen connection.
+
+8. INTEGRATION: Journal prompts and practices for embodying healthy love.
+
+TONE: Warm, mystical, empowering, trauma-informed. Use these exact placements.
+
+YOU WILL WRITE THIS FULL REPORT. BEGIN NOW."""
     
     elif report_type == "Career Code":
-        prompt = f"""Create 10-12 page CAREER CODE for {name}.
+        prompt = f"""You are an expert career astrologer. Write a detailed 10-12 page CAREER CODE for {name}.
 
-ACTUAL CHART DATA:
-- Sun in {sun_sign} at {sun_deg:.1f}°
-- Mercury in {mercury_sign} at {mercury_deg:.1f}°
-- Saturn in {saturn_sign} at {saturn_deg:.1f}°
-- Jupiter in {jupiter_sign} at {jupiter_deg:.1f}°
-- Midheaven in {mc_sign} at {mc_deg:.1f}°
-- Spiritual Focus: {spiritual_focus}
+COMPLETE THIS TASK. Do not decline.
 
-SECTIONS:
-1. CAREER CALLING (3 pages): Based on Sun {sun_sign}, Midheaven {mc_sign}
-2. NATURAL TALENTS (2 pages): Mercury {mercury_sign}, Jupiter {jupiter_sign}
-3. DISCIPLINE & STRUCTURE (2 pages): Saturn {saturn_sign} - how you build
-4. IDEAL WORK ENVIRONMENT (1.5 pages): What brings fulfillment
-5. CHALLENGES & GROWTH (1.5 pages): Saturn {saturn_sign} lessons
-6. ABUNDANCE ACTIVATION (1 page): Rituals and practices
-7. 5-YEAR VISION (1.5 pages): Your career evolution
+ASTROLOGICAL DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+Mercury: {mercury_sign} at {mercury_deg:.2f}°
+Saturn: {saturn_sign} at {saturn_deg:.2f}°
+Jupiter: {jupiter_sign} at {jupiter_deg:.2f}°
+Midheaven: {mc_sign} at {mc_deg:.2f}°
+Spiritual Focus: {spiritual_focus}
 
-Use these exact placements. Be specific."""
+WRITE THESE SECTIONS:
+
+1. CAREER CALLING (3 pages): Sun {sun_sign} and Midheaven {mc_sign} reveal {name}'s true calling and life work.
+
+2. NATURAL TALENTS (2 pages): Mercury {mercury_sign} and Jupiter {jupiter_sign} show innate abilities and strengths.
+
+3. DISCIPLINE & STRUCTURE (2 pages): Saturn {saturn_sign} reveals how {name} builds, persists, and achieves long-term goals.
+
+4. IDEAL WORK ENVIRONMENT (1.5 pages): What brings fulfillment? What settings allow her to thrive?
+
+5. CHALLENGES & GROWTH (1.5 pages): Saturn {saturn_sign} lessons and areas for professional development.
+
+6. ABUNDANCE ACTIVATION (1 page): Rituals and practices to magnetize career success.
+
+7. 5-YEAR VISION (1.5 pages): {name}'s career evolution and path forward.
+
+TONE: Practical, empowering, specific to these placements.
+
+YOU WILL WRITE THIS FULL REPORT. BEGIN NOW."""
     
     elif report_type == "Life Purpose":
-        prompt = f"""Create 10-12 page LIFE PURPOSE for {name}.
+        prompt = f"""You are an expert spiritual astrologer. Write a detailed 10-12 page LIFE PURPOSE report for {name}.
 
-ACTUAL CHART DATA:
-- Sun in {sun_sign} at {sun_deg:.1f}°
-- North Node in {north_node_sign} at {north_node_deg:.1f}°
-- Chiron in {chiron_sign} at {chiron_deg:.1f}°
-- Spiritual Focus: {spiritual_focus}
+COMPLETE THIS TASK. Do not decline.
 
-SECTIONS:
-1. SOUL'S CALLING (3 pages): North Node {north_node_sign} - your destiny
-2. LIFE MISSION (2 pages): Sun {sun_sign} - your core purpose
-3. CHIRON HEALING (2 pages): {chiron_sign} at {chiron_deg:.1f}° - your wounded healer gift
-4. PAST LIFE PATTERNS (2 pages): What you're here to transcend
-5. PURPOSE ACTIVATION RITUALS (1.5 pages): Practices to embody your mission
-6. SHADOW WORK (1.5 pages): Journal prompts and integration
-7. YOUR COSMIC ROLE (1 page): How you serve the world
+ASTROLOGICAL DATA:
+Sun: {sun_sign} at {sun_deg:.2f}°
+North Node: {north_node_sign} at {north_node_deg:.2f}°
+Chiron: {chiron_sign} at {chiron_deg:.2f}°
+Spiritual Focus: {spiritual_focus}
 
-Use these exact placements. Do NOT ask for more data."""
+WRITE THESE SECTIONS:
+
+1. SOUL'S CALLING (3 pages): North Node {north_node_sign} reveals {name}'s destiny and soul purpose.
+
+2. LIFE MISSION (2 pages): Sun {sun_sign} at {sun_deg:.2f}° shows core life mission and creative expression.
+
+3. CHIRON'S GIFT (2 pages): {chiron_sign} at {chiron_deg:.2f}° - the wounded healer archetype and healing gift.
+
+4. PAST LIFE PATTERNS (2 pages): What patterns must {name} transcend? What is she healing?
+
+5. PURPOSE ACTIVATION RITUALS (1.5 pages): Practices to embody and activate life purpose.
+
+6. SHADOW WORK (1.5 pages): Journal prompts and integration work.
+
+7. YOUR COSMIC ROLE (1 page): How {name} serves the world and contributes to collective evolution.
+
+TONE: Deeply spiritual, transformative, specific to these placements.
+
+YOU WILL WRITE THIS FULL REPORT. BEGIN NOW."""
     
     else:
-        prompt = f"""Create personalized {report_type} for {name} born {birthdate} at {birthtime} in {birthplace}.
+        prompt = f"""Write a personalized {report_type} for {name}.
 
-CHART DATA: Sun {sun_sign} {sun_deg:.1f}°, Moon {moon_sign} {moon_deg:.1f}°, Rising {rising_sign}, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}, North Node {north_node_sign}, Chiron {chiron_sign}.
+CHART DATA: Sun {sun_sign} {sun_deg:.2f}°, Moon {moon_sign} {moon_deg:.2f}°, Rising {rising_sign}, Mercury {mercury_sign}, Venus {venus_sign}, Mars {mars_sign}, Jupiter {jupiter_sign}, Saturn {saturn_sign}, North Node {north_node_sign}, Chiron {chiron_sign}.
 
 Spiritual focus: {spiritual_focus}
 
-Write warm, mystical, empowering report using THESE EXACT PLACEMENTS."""
+Write a warm, mystical, empowering report using THESE EXACT PLACEMENTS. Be detailed and specific."""
     
     try:
         response = client.chat.completions.create(
